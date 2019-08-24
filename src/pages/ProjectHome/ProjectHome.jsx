@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import './index.scss';
 
-export default class StatsApi extends Component {
-    static displayName = 'StatsApi';
+export default class ProjectHome extends Component {
+    static displayName = 'BucketOverview';
 
     constructor(props) {
       super(props);
@@ -10,8 +11,8 @@ export default class StatsApi extends Component {
 
     render() {
       return (
-        <div>
-                API 统计
+        <div className="project-home">
+          project-home
         </div>
       );
     }

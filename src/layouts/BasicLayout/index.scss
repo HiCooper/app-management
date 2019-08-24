@@ -7,31 +7,6 @@
   background-position: center 0;
 }
 
-.picture-header {
-  position: fixed;
-  z-index: 1;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 24px;
-  background: transparent;
-
-  .logo {
-    width: 200px;
-    line-height: 32px;
-    color: #ffffff;
-    font-size: 24px;
-    font-weight: bold;
-    text-shadow: 0 0 0 #574ab7, 1px 1px 0 rgba(0,0,0,0.15);
-  }
-
-  .left , .right{
-    display: flex;
-    align-items: center;
-    color: #ffffff;
-  }
-}
-
 .default-header {
   position: fixed;
   z-index: 2;
@@ -117,7 +92,7 @@
 }
 
 .main-content {
-  margin-left: 200px;
+  margin-left: 220px;
   height: 100%;
   background: #f0f2f5;
 }
