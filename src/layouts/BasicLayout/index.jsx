@@ -5,7 +5,7 @@ import MainRouter from './MainRouter';
 import './index.scss';
 import logo from '../../asserts/logo.svg';
 
-import RightContent from '../../components/GlobalHeader/RightContent';
+import Index from '../../components/GlobalHeader';
 
 import sideMenuConfig from '../../menuConfig';
 
@@ -89,7 +89,7 @@ class BasicLayout extends Component {
               type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
               onClick={this.toggle}
             />
-            <RightContent />
+            <Index />
           </Header>
           <Content
             style={{

@@ -3,8 +3,8 @@ import './index.less';
 
 import AvatarDropdown from './AvatarDropdown';
 
-export default class RightContent extends Component {
-  static displayName = 'RightContent';
+export default class Index extends Component {
+  static displayName = 'index';
 
   constructor(props) {
     super(props);
