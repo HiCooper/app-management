@@ -13,7 +13,7 @@ const router = () => {
   return (
     <HashRouter>
       <Switch>
-        <Redirect exact strict from="/" to="/dashboard" />
+        <Redirect exact strict from="/" to="/dashboard/analysis" />
         <Route path="/" component={BasicLayout} />
       </Switch>
     </HashRouter>

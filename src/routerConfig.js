@@ -3,11 +3,11 @@ import ProjectHome from './pages/ProjectHome';
 
 const routerConfig = [
   {
-    path: '/dashboard',
+    path: '/dashboard/analysis',
     component: Overview,
   },
   {
-    path: '/project',
+    path: '/project/list',
     component: ProjectHome,
   },
 ];

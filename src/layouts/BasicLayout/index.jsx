@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Avatar, Button, Col, Divider, Icon, Layout, Menu, Popover, Row } from 'antd';
+import { Icon, Layout, Menu } from 'antd';
 import MainRouter from './MainRouter';
-import sideMenuConfig from '../../menuConfig';
 import './index.scss';
+import logo from '../../asserts/logo.svg';
 
+import RightContent from '../../components/GlobalHeader/RightContent';
+
+import sideMenuConfig from '../../menuConfig';
+
+const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 
 class BasicLayout extends Component {
@@ -14,128 +19,88 @@ class BasicLayout extends Component {
     super(props);
     const { pathname } = this.props.location;
     this.state = {
-      color: '#00a2ae',
-      userName: 'HiCooper',
-      activateMenuPath: pathname,
+      collapsed: false,
+      defaultOpenKey: [pathname.substr(0, pathname.lastIndexOf('/'))],
+      defaultActive: pathname,
     };
   }
 
-  subMenuSelect = (item) => {
-    const location = this.props.location;
-    if (item.key !== location.pathname) {
-      this.props.history.push(item.key);
-      this.setState({
-        activateMenuPath: item.key,
-      });
-    }
+  toggle = () => {
+    const { collapsed } = this.state;
+    this.setState({
+      collapsed: !collapsed,
+    });
   };
 
-  text = () => {
-    const { userName, color } = this.state;
-    return (
-      <div className="personal">
-        <Avatar style={{ backgroundColor: color, verticalAlign: 'middle', marginRight: '5px' }} size="large">
-          {userName.substr(0, 1)}
-        </Avatar>
-        <span>{userName}</span>
-      </div>
-    );
-  };
-
-  content = () => {
-    return (
-      <div className="personal-card-content">
-        <div className="btn-group">
-          <div className="item">
-            <Icon type="user" style={{ fontSize: '20px' }} />
-            <div className="title">
-              个人信息
-            </div>
-          </div>
-          <div className="item">
-            <Icon type="key" style={{ fontSize: '20px' }} />
-            <div className="title">
-              密钥管理
-            </div>
-          </div>
-        </div>
-        <Divider style={{ margin: '10px 0' }} />
-        <div className="footer">
-          <Button type="link" style={{ color: '#ccccccc' }}>
-            <Icon type="poweroff" />
-            退出当前账户
-          </Button>
-        </div>
-      </div>
-    );
-  };
-
-  renderMenuItem = (item) => {
-    return (
-      <Menu.Item key={item.path}>
-        <Row>
-          <Col span={4}>
-            {
-              item.icon ? (<Icon type={item.icon} theme="filled" />) : <span className="bucket-dot" />
-            }
-          </Col>
-          <Col span={20}>
-            {item.name}
-          </Col>
-        </Row>
-      </Menu.Item>
-    );
+  handleClick = (e) => {
+    this.props.history.push(e.key);
   };
 
   render() {
-    const { color, userName, activateMenuPath } = this.state;
+    const { defaultActive, defaultOpenKey } = this.state;
     return (
       <Layout className="basic-layout">
-        <Header className="default-header">
-          <div className="left">
-            <div className="logo">
-              <Icon type="hdd" />
-              <span style={{ marginLeft: '5px' }}>应用管理系统</span>
-            </div>
+        <Sider width={256}
+          trigger={null}
+          collapsible
+          collapsed={this.state.collapsed}
+          className="menu-sider"
+        >
+          <div className="logo">
+            <img src={logo} alt="" />
+            <h1>应用管理系统</h1>
           </div>
-          <div className="right">
-            <Popover placement="bottomRight"
-              title={this.text()}
-              content={this.content()}
-              trigger="click"
-              className="personal-info"
-            >
-              <div>
-                <Avatar style={{ backgroundColor: color, verticalAlign: 'middle', marginRight: '5px' }}>
-                  {userName.substr(0, 1)}
-                </Avatar>
-                <span style={{ fontWeight: 'bold', marginRight: '5px' }}>
-                  {userName}
-                </span>
-              </div>
-            </Popover>
-          </div>
-        </Header>
-        <Layout className="main-section">
-          <Sider width={220} className="default-side">
-            <Menu
-              onSelect={this.subMenuSelect}
-              mode="inline"
-              defaultOpenKeys={['1']}
-              defaultSelectedKeys={[activateMenuPath]}
-              selectedKeys={[activateMenuPath]}
-              style={{ height: '100%', borderRight: 0 }}
-            >
-              {
-                sideMenuConfig.map(this.renderMenuItem)
-              }
-            </Menu>
-          </Sider>
-          <Layout className="main-content">
-            <Content className="content">
-              <MainRouter />
-            </Content>
-          </Layout>
+          <Menu theme="dark"
+            mode="inline"
+            defaultOpenKeys={defaultOpenKey}
+            defaultSelectedKeys={[defaultActive]}
+            onOpenChange={this.onOpenChange}
+            onClick={this.handleClick}
+          >
+            {
+              sideMenuConfig.map((item) => {
+                return (
+                  <SubMenu
+                    key={item.path}
+                    title={(
+                      <span>
+                        <Icon type={item.icon} />
+                        <span>{item.name}</span>
+                      </span>
+                    )}
+                  >
+                    {
+                      item.children && item.children.length > 0 ? (
+                        item.children.map((childItem) => {
+                          return <Menu.Item key={item.path + childItem.path}>{childItem.name}</Menu.Item>;
+                        })
+                      ) : null
+                    }
+                  </SubMenu>
+                );
+              })
+            }
+          </Menu>
+        </Sider>
+        <Layout>
+          <Header style={{ background: '#fff', padding: 0 }} className="global-header">
+            <Icon
+              className="trigger"
+              type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+              onClick={this.toggle}
+            />
+            <RightContent />
+          </Header>
+          <Content
+            style={{
+              margin: '24px 16px',
+              padding: 24,
+              background: '#fff',
+              minHeight: 280,
+            }}
+          >
+            <MainRouter />
+          </Content>
         </Layout>
       </Layout>
     );
