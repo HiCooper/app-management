@@ -30,11 +30,11 @@ export default class AvatarDropdown extends Component {
     } = this.props;
     const menuHeaderDropdown = (
       <Menu className="menu" onClick={this.onMenuClick}>
-        <Menu.Item key="/user/center">
+        <Menu.Item key="/home/center">
           <Icon type="user" />
           <span>个人中心</span>
         </Menu.Item>
-        <Menu.Item key="/user/settings">
+        <Menu.Item key="/home/settings">
           <Icon type="setting" />
           <span>个人设置</span>
         </Menu.Item>
