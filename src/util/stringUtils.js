@@ -45,7 +45,8 @@ export function checkParams(params, ignoreKeys) {
   let result = true;
   if (typeof params === 'string' || (typeof params === 'number' && params !== 0) || (typeof params === 'boolean' && params !== false)) {
     return !!params;
-  } if (params === undefined || JSON.stringify(params) === '{}') {
+  }
+  if (params === undefined || JSON.stringify(params) === '{}') {
     result = false;
   } else if (Array.isArray(params)) {
     if (params.length === 0) {
