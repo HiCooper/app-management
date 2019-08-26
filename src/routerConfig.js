@@ -1,7 +1,7 @@
-import Overview from './pages/Overview';
-import ProjectHome from './pages/ProjectHome';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import Overview from './pages/overview';
+import ProjectHome from './pages/project';
+import Login from './pages/user/login';
+import Register from './pages/user/register';
 
 const routerConfig = [
   {
