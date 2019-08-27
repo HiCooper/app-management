@@ -4,8 +4,8 @@ import './indes.scss';
 import UserRouter from './UserRouter';
 
 const { Header, Footer, Content } = Layout;
-export default class index extends Component {
-  static displayName = 'index';
+export default class UserLayout extends Component {
+  static displayName = 'UserLayout';
 
   constructor(props) {
     super(props);

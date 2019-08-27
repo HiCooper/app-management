@@ -15,6 +15,30 @@
 
   }
 
+  .global-header {
+    position: relative;
+    height: 64px;
+    padding: 0;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+    width: 100%;
+    z-index: 2;
+  }
+
+  .page-header {
+    box-sizing: border-box;
+    margin: 0;
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 14px;
+    font-variant: tabular-nums;
+    line-height: 1.5;
+    list-style: none;
+    font-feature-settings: 'tnum';
+    position: relative;
+    padding: 16px 24px;
+    background: #fff;
+  }
+
   .menu-sider {
     position: relative;
     z-index: 10;

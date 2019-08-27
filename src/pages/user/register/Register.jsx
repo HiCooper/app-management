@@ -56,6 +56,7 @@ class Register extends Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        this.props.history.push('/user/register-result');
       }
     });
   };
@@ -176,7 +177,7 @@ class Register extends Component {
           <Form.Item>
             <div className="button-op">
               <Button type="primary" htmlType="submit" style={{ width: '50%' }}>
-                Register
+                注册
               </Button>
               <Link to="/user/login">使用已有账户登录</Link>
             </div>

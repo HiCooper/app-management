@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Icon, Layout, Menu } from 'antd';
+import { Breadcrumb, Icon, Layout, Menu } from 'antd';
 import MainRouter from './MainRouter';
 import './index.scss';
 import logo from '../../asserts/logo.svg';
@@ -19,6 +19,7 @@ class BasicLayout extends Component {
     super(props);
     const { pathname } = this.props.location;
     this.state = {
+      pathname,
       collapsed: false,
       defaultOpenKey: [pathname.substr(0, pathname.lastIndexOf('/'))],
       defaultActive: pathname,
@@ -37,7 +38,7 @@ class BasicLayout extends Component {
   };
 
   render() {
-    const { defaultActive, defaultOpenKey } = this.state;
+    const { defaultActive, defaultOpenKey, pathname } = this.state;
     return (
       <Layout className="basic-layout">
         <Sider width={256}
@@ -91,15 +92,30 @@ class BasicLayout extends Component {
             />
             <Index />
           </Header>
-          <Content
-            style={{
-              margin: '24px 16px',
-              padding: 24,
-              background: '#fff',
-              minHeight: 280,
-            }}
-          >
-            <MainRouter />
+          <Content>
+            <div className="page-header">
+              <Breadcrumb>
+                {
+                  pathname !== '/' ? pathname.split('/').map((item) => {
+                    return (
+                      <Breadcrumb.Item key={item}>{item}</Breadcrumb.Item>
+
+                    );
+                  }) : null
+                }
+              </Breadcrumb>
+            </div>
+            <div className="main-content"
+              style={{
+                margin: '24px 16px',
+                padding: 24,
+                background: '#fff',
+                minHeight: 280,
+                flex: 'auto',
+              }}
+            >
+              <MainRouter />
+            </div>
           </Content>
         </Layout>
       </Layout>
