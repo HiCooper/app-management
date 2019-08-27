@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './index.scss';
 
-export default class ProjectHome extends Component {
+export default class Project extends Component {
   static displayName = 'BucketOverview';
 
   constructor(props) {

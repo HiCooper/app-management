@@ -1,5 +1,5 @@
 import Overview from './pages/overview';
-import ProjectHome from './pages/project';
+import Project from './pages/project';
 import Login from './pages/user/login';
 import Register from './pages/user/register';
 
@@ -11,7 +11,7 @@ const routerConfig = [
   },
   {
     path: '/project/list',
-    component: ProjectHome,
+    component: Project,
     exact: true,
   },
 ];
