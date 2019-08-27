@@ -4,6 +4,7 @@ import Analysis from './pages/dashboard/analysis/Analysis';
 import Monitor from './pages/dashboard/monitor/Monitor';
 import Workplace from './pages/dashboard/workplace/Workplace';
 import ProjectList from './pages/project/list';
+import AppList from './pages/app/list';
 import RegisterResult from './pages/user/register-result';
 
 const routerConfig = [
@@ -34,6 +35,16 @@ const routerConfig = [
         name: 'list',
         path: '/list',
         component: ProjectList,
+      },
+    ],
+  },
+  {
+    path: '/app',
+    children: [
+      {
+        name: 'list',
+        path: '/list',
+        component: AppList,
       },
     ],
   },

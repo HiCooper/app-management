@@ -32,11 +32,6 @@ const sideMenuConfig = [
         path: '/list',
         exact: true,
       },
-      {
-        name: '添加',
-        path: '/add',
-        exact: true,
-      },
     ],
   },
   {
@@ -47,11 +42,6 @@ const sideMenuConfig = [
       {
         name: '列表',
         path: '/list',
-        exact: true,
-      },
-      {
-        name: '添加',
-        path: '/add',
         exact: true,
       },
     ],
@@ -65,11 +55,6 @@ const sideMenuConfig = [
       {
         name: '列表',
         path: '/list',
-        exact: true,
-      },
-      {
-        name: '添加',
-        path: '/add',
         exact: true,
       },
     ],

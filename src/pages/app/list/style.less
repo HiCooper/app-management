@@ -1,5 +1,4 @@
 @import '~antd/es/style/themes/default.less';
-@import './utils/utils.less';
 
 .standardList {
   :global {
@@ -69,6 +68,31 @@
   .extraContentSearch {
     width: 272px;
     margin-left: 16px;
+  }
+}
+
+.app-base-info {
+  display: flex;
+  flex: 1 1;
+  align-items: flex-start;
+
+  h4{
+    margin-bottom: 4px;
+    color: rgba(0,0,0,.65);
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 600;
+  }
+
+  a{
+    color: rgba(0,0,0,.65);
+    transition: all .3s;
+  }
+
+  .desc{
+    color: rgba(0,0,0,.45);
+    font-size: 14px;
+    line-height: 22px;
   }
 }
 
@@ -164,6 +188,12 @@
   }
 }
 
+.listCard {
+  .ant-card-head {
+    border-bottom: unset;
+  }
+}
+
 @media screen and (max-width: 1400px) {
   .standardList {
     .listContent {
@@ -176,13 +206,11 @@
 }
 
 .standardListForm {
-  :global {
-    .ant-form-item {
-      margin-bottom: 12px;
-      &:last-child {
-        margin-bottom: 32px;
-        padding-top: 4px;
-      }
+  .ant-form-item {
+    margin-bottom: 12px;
+    &:last-child {
+      margin-bottom: 32px;
+      padding-top: 4px;
     }
   }
 }

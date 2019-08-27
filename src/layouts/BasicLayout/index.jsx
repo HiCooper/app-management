@@ -107,9 +107,7 @@ class BasicLayout extends Component {
             </div>
             <div className="main-content"
               style={{
-                margin: '24px 16px',
-                padding: 24,
-                background: '#fff',
+                margin: '24px 24px 0',
                 minHeight: 280,
                 flex: 'auto',
               }}
