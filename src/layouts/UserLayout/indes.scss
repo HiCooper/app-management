@@ -1,0 +1,28 @@
+.user-layout {
+  background-image: url("../../asserts/login-bg.svg");
+  background-repeat: no-repeat;
+  background-position: center 110px;
+  background-size: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: auto;
+
+  .header {
+    background: transparent;
+    width: 100%;
+    height: 40px;
+    line-height: 44px;
+  }
+
+  .content {
+    padding: 32px 0 24px;
+  }
+
+  .footer-copyright {
+    margin: 48px 0 24px 0;
+    padding: 0 16px;
+    text-align: center;
+  }
+
+}

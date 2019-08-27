@@ -4,7 +4,7 @@
 import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import React from 'react';
 import BasicLayout from './layouts/BasicLayout';
-import BlankLayout from './layouts/BlankLayout';
+import BlankLayout from './layouts/UserLayout';
 
 
 // 按照 Layout 分组路由

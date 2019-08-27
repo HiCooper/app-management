@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
-import { routerConfig } from '../../routerConfig';
-import NotFound from '../../components/NotFound';
+import { Redirect, Route, Switch } from 'react-router-dom';
+import { userRouterConfig } from '../../routerConfig';
 
-export default class MainRouter extends Component {
-  static displayName = 'MainRouter';
+export default class userRouter extends Component {
+  static displayName = 'index';
 
   constructor(props) {
     super(props);
@@ -31,11 +30,12 @@ export default class MainRouter extends Component {
       <Route key={item.path} path={item.path} component={item.component} exact={item.exact} />);
   };
 
+
   render() {
     return (
       <Switch>
-        {routerConfig.map(this.renderNormalRoute)}
-        <Route component={NotFound} />
+        {userRouterConfig.map(this.renderNormalRoute)}
+        <Redirect exact strict from="/user/*" to="/user/login" />
       </Switch>
     );
   }
