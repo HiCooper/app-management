@@ -26,6 +26,10 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const { Search, TextArea } = Input;
 
+
+const statusMap = ['default', 'processing', 'success', 'error'];
+const status = ['已关闭', '启动中', '运行中', '异常'];
+
 class AppList extends Component {
   static displayName = 'AppList';
 
@@ -110,11 +114,6 @@ class AppList extends Component {
     });
   };
 
-  goPage = (route, appId, e) => {
-    e.preventDefault();
-    this.props.history.push(`${route}?appId=${appId}`);
-  };
-
   render() {
     const { cardLoading, visible, current } = this.state;
     const { form: { getFieldDecorator } } = this.props;
@@ -151,47 +150,6 @@ class AppList extends Component {
       showQuickJumper: true,
       pageSize: 5,
       total: 50,
-    };
-
-    const renderState = (state) => {
-      if (state === 'success') {
-        return (
-          <div>
-            <Badge status={state} />
-            <span>运行中</span>
-          </div>
-        );
-      }
-      if (state === 'error') {
-        return (
-          <div>
-            <Badge status={state} />
-            <span>状态异常</span>
-          </div>
-        );
-      }
-      if (state === 'default') {
-        return (
-          <div>
-            <Badge status={state} />
-            <span>已停止</span>
-          </div>
-        );
-      }
-      if (state === 'processing') {
-        return (
-          <div>
-            <Badge status={state} />
-            <span>启动中</span>
-          </div>
-        );
-      }
-      return (
-        <div>
-          <Badge status="warning" />
-          <span>未知状态</span>
-        </div>
-      );
     };
 
     const onChange = (value) => {
@@ -290,14 +248,33 @@ class AppList extends Component {
       {
         title: '上次启动成功时间',
         dataIndex: 'lastSuccessTime',
+        sorter: true,
         key: 'lastSuccessTime',
       },
       {
         title: '状态',
         key: 'state',
         dataIndex: 'state',
-        render: (text) => {
-          return renderState(text);
+        filters: [
+          {
+            text: status[0],
+            value: '0',
+          },
+          {
+            text: status[1],
+            value: '1',
+          },
+          {
+            text: status[2],
+            value: '2',
+          },
+          {
+            text: status[3],
+            value: '3',
+          },
+        ],
+        render(val) {
+          return <Badge status={statusMap[val]} text={status[val]} />;
         },
       },
       {
@@ -305,9 +282,9 @@ class AppList extends Component {
         key: 'action',
         render: (text, record) => (
           <span>
-            <Button type="link" onClick={e => this.goPage('/app/config', record.id, e)}>配置</Button>
+            <Link to={`/app/config?appId=${record.id}`}>配置</Link>
             <Divider type="vertical" />
-            <Button type="link" onClick={e => this.goPage('/app/detail', record.id, e)}>详情</Button>
+            <Link to={`/app/detail?appId=${record.id}`}>详情</Link>
           </span>
         ),
       },
@@ -320,9 +297,9 @@ class AppList extends Component {
         appName: 'Alipay',
         description: '那是一种内在的东西， 他们到达不了，也无法触及的',
         logo: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
-        lastSuccessTime: '2019-08-08 11:12:45',
+        lastSuccessTime: '2019-08-08 04:12:45',
         address: 'New York No. 1 Lake Park',
-        state: 'success',
+        state: '1',
       },
       {
         key: '2',
@@ -330,9 +307,9 @@ class AppList extends Component {
         appName: 'Angular',
         description: '希望是一个好东西，也许是最好的，好东西是不会消亡的',
         logo: 'https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png',
-        lastSuccessTime: '2019-08-08 11:12:45',
+        lastSuccessTime: '2019-08-08 03:12:45',
         address: 'London No. 1 Lake Park',
-        state: 'default',
+        state: '2',
       },
       {
         key: '3',
@@ -340,9 +317,9 @@ class AppList extends Component {
         appName: 'Ant Design',
         description: '生命就像一盒巧克力，结果往往出人意料',
         logo: 'https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png',
-        lastSuccessTime: '2019-08-08 11:12:45',
+        lastSuccessTime: '2019-08-08 02:12:45',
         address: 'Sidney No. 1 Lake Park',
-        state: 'processing',
+        state: '3',
       },
       {
         key: '4',
@@ -350,9 +327,9 @@ class AppList extends Component {
         appName: 'Ant Design Pro',
         description: '城镇中有那么多的酒馆，她却偏偏走进了我的酒馆',
         logo: 'https://gw.alipayobjects.com/zos/rmsportal/sfjbOqnsXXJgNCjCzDBL.png',
-        lastSuccessTime: '2019-08-08 11:12:45',
+        lastSuccessTime: '2019-08-08 01:12:45',
         address: 'Sidney No. 1 Lake Park',
-        state: 'error',
+        state: '0',
       },
     ];
 

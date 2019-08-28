@@ -21,7 +21,7 @@ export default class PageHeaderWrapper extends Component {
     const pathname = urlHash.substr(1, index === -1 ? urlHash.length - 1 : index - 1);
     const breadNames = getBreadNamesByPathname(pathname);
     return (
-      <div className={`${className} page-header-wrapper`}>
+      <div className={className ? `${className} page-header-wrapper` : 'page-header-wrapper'}>
         <div className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item key={0}>

@@ -28,6 +28,10 @@ const progressColumns = [
 ];
 
 
+const statusMap = ['default', 'processing', 'success', 'error'];
+const status = ['已关闭', '启动中', '运行中', '异常'];
+
+
 export default class AppDetail extends Component {
   static displayName = 'AppDetail';
 
@@ -93,12 +97,8 @@ export default class AppDetail extends Component {
         title: '状态',
         dataIndex: 'state',
         key: 'state',
-        render: (text) => {
-          if (text === 'success') {
-            return <Badge status="success" text="成功" />;
-          }
-
-          return <Badge status="processing" text="进行中" />;
+        render(val) {
+          return <Badge status={statusMap[val]} text={status[val]} />;
         },
       },
       {
@@ -129,47 +129,6 @@ export default class AppDetail extends Component {
       },
     ];
 
-    const renderState = (state) => {
-      if (state === 'success') {
-        return (
-          <div>
-            <Badge status={state} />
-            <span>运行中</span>
-          </div>
-        );
-      }
-      if (state === 'error') {
-        return (
-          <div>
-            <Badge status={state} />
-            <span>状态异常</span>
-          </div>
-        );
-      }
-      if (state === 'default') {
-        return (
-          <div>
-            <Badge status={state} />
-            <span>已停止</span>
-          </div>
-        );
-      }
-      if (state === 'processing') {
-        return (
-          <div>
-            <Badge status={state} />
-            <span>启动中</span>
-          </div>
-        );
-      }
-      return (
-        <div>
-          <Badge status={state} />
-          <span>未知状态</span>
-        </div>
-      );
-    };
-
     const columns = [
       {
         title: 'IP',
@@ -185,13 +144,9 @@ export default class AppDetail extends Component {
         title: 'STATE',
         dataIndex: 'state',
         key: 'state',
-        render: text => (
-          <div>
-            {
-              renderState(text)
-            }
-          </div>
-        ),
+        render(val) {
+          return <Badge status={statusMap[val]} text={status[val]} />;
+        },
       },
       {
         title: 'Action',
@@ -220,19 +175,19 @@ export default class AppDetail extends Component {
         key: '1',
         ip: '192.168.2.123',
         port: 8970,
-        state: 'success',
+        state: '0',
       },
       {
         key: '2',
         ip: '192.168.2.124',
         port: 8970,
-        state: 'processing',
+        state: '1',
       },
       {
         key: '3',
         ip: '192.168.2.125',
         port: 8970,
-        state: 'error',
+        state: '2',
       },
     ];
     return (

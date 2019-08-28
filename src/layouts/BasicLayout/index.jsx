@@ -98,7 +98,7 @@ class BasicLayout extends Component {
             />
             <Index />
           </Header>
-          <Content>
+          <Content className="global-content">
             <MainRouter />
           </Content>
         </Layout>
