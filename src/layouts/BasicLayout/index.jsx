@@ -49,7 +49,7 @@ class BasicLayout extends Component {
         >
           <div className="logo">
             <img src={logo} alt="" />
-            <h1>应用管理系统</h1>
+            <h1>应用运行监控管理系统</h1>
           </div>
           <Menu theme="dark"
             mode="inline"

@@ -3,7 +3,7 @@
  */
 import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import React from 'react';
-import { ConfigProvider, BackTop } from 'antd';
+import { BackTop, ConfigProvider } from 'antd';
 import zhCN from 'antd/es/locale/zh_CN';
 import BasicLayout from './layouts/BasicLayout';
 import BlankLayout from './layouts/UserLayout';
@@ -18,7 +18,7 @@ const router = () => {
       <BackTop />
       <HashRouter>
         <Switch>
-          <Redirect exact strict from="/" to="/dashboard/analysis" />
+          <Redirect exact strict from="/" to="/app/list" />
           <Route path="/user/*" component={BlankLayout} />
           <Route path="/" component={BasicLayout} />
         </Switch>

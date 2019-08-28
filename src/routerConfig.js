@@ -7,6 +7,7 @@ import ProjectList from './pages/project/list';
 import AppList from './pages/app/list';
 import AppDetail from './pages/app/detail';
 import AppConfig from './pages/app/config';
+import ServerList from './pages/server/list';
 import RegisterResult from './pages/user/register-result';
 
 const routerConfig = [
@@ -39,6 +40,17 @@ const routerConfig = [
         name: '列表',
         path: '/list',
         component: ProjectList,
+      },
+    ],
+  },
+  {
+    path: '/server',
+    name: '服务器',
+    children: [
+      {
+        name: '列表',
+        path: '/list',
+        component: ServerList,
       },
     ],
   },

@@ -216,6 +216,17 @@ class AppList extends Component {
               initialValue: current && current.appName,
             })(<Input placeholder="请输入应用名称" />)}
           </FormItem>
+          <FormItem label="git(SSH)仓库地址" {...this.formLayout}>
+            {getFieldDecorator('appName', {
+              rules: [
+                {
+                  required: true,
+                  message: '请输入git仓库地址(SSH)!',
+                },
+              ],
+              initialValue: current && current.appName,
+            })(<Input placeholder="git@github.com:xxx/project-a.git" />)}
+          </FormItem>
           <FormItem label="所属项目" {...this.formLayout}>
             {getFieldDecorator('projectId', {
               rules: [

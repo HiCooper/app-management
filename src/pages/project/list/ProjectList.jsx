@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 
 export default class ProjectList extends Component {
-    static displayName = 'ProjectList';
+  static displayName = 'ProjectList';
 
-    constructor(props) {
-      super(props);
-      this.state = {};
-    }
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
 
-    render() {
-      return (
-        <div>
-              ProjectList hello
-        </div>
-      );
-    }
+  render() {
+    return (
+      <div>
+        ProjectList hello
+      </div>
+    );
+  }
 }

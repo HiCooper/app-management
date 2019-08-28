@@ -26,7 +26,7 @@ class Login extends Component {
     return (
       <div className="login-home">
         <div className="login-top">
-          <span className="title">应用管理系统</span>
+          <span className="title">应用运行监控管理系统</span>
           <p className="desc">登录</p>
         </div>
 

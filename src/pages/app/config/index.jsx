@@ -140,6 +140,17 @@ class AppConfig extends Component {
                 />,
               )}
             </FormItem>
+            <FormItem label="git(SSH)地址" {...formItemLayout}>
+              {getFieldDecorator('appName', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入仓库地址(SSH)!',
+                  },
+                ],
+                initialValue: '',
+              })(<Input placeholder="git@github.com:xxx/project-a.git" />)}
+            </FormItem>
             <FormItem label="所属项目" {...formItemLayout}>
               {getFieldDecorator('projectId', {
                 rules: [

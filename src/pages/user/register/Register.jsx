@@ -100,7 +100,7 @@ class Register extends Component {
       <div className="register-home">
 
         <div className="register-top">
-          <span className="title">应用管理系统</span>
+          <span className="title">应用运行监控管理系统</span>
           <p className="desc">注册</p>
         </div>
         <Form onSubmit={this.handleSubmit} className="register-form">
