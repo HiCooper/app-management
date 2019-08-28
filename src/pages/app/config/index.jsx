@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Alert, Button, Card, Divider, Form, Icon, Input, Modal, Select, Tooltip } from 'antd';
+import AceEditor from 'react-ace';
+import 'brace/mode/sh';
+import 'brace/theme/chrome';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
-
 import './style.less';
 
 const FormItem = Form.Item;
@@ -190,22 +192,15 @@ class AppConfig extends Component {
               {...formItemLayout}
               label="构建脚本"
             >
-              {getFieldDecorator('buildShell', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入构建脚本!',
-                  },
-                ],
-              })(
-                <TextArea
-                  style={{
-                    minHeight: 32,
-                  }}
-                  placeholder="请输入构建脚本(将源代码打包成 jar 或者 war)"
-                  rows={4}
-                />,
-              )}
+              <AceEditor
+                mode="sh"
+                fontSize={14}
+                height="200px"
+                theme="chrome"
+                onChange={onChange}
+                name="UNIQUE_ID_OF_DIV"
+                editorProps={{ $blockScrolling: true }}
+              />
             </FormItem>
             <FormItem
               {...formItemLayout}
@@ -289,8 +284,6 @@ class AppConfig extends Component {
             删除应用
           </Button>
         </Card>
-
-
       </PageHeaderWrapper>
     );
   }
