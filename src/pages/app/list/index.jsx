@@ -5,7 +5,6 @@ import {
   Button,
   Card,
   Col,
-  DatePicker,
   Divider,
   Dropdown,
   Form,
@@ -13,20 +12,17 @@ import {
   Input,
   Menu,
   Modal,
+  notification,
   Radio,
-  Result,
   Row,
-  Select,
   Table,
 } from 'antd';
-import moment from 'moment';
 import { findDOMNode } from 'react-dom';
 import './style.less';
 
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-const SelectOption = Select.Option;
 const { Search, TextArea } = Input;
 
 class AppList extends Component {
@@ -37,10 +33,18 @@ class AppList extends Component {
     this.state = {
       cardLoading: false,
       visible: false,
-      done: false,
       current: undefined,
     };
   }
+
+  formLayout = {
+    labelCol: {
+      span: 7,
+    },
+    wrapperCol: {
+      span: 13,
+    },
+  };
 
   componentDidMount() {
     this.initData();
@@ -67,7 +71,6 @@ class AppList extends Component {
   handleDone = () => {
     setTimeout(() => this.addBtn && this.addBtn.blur(), 0);
     this.setState({
-      done: false,
       visible: false,
     });
   };
@@ -79,6 +82,14 @@ class AppList extends Component {
     });
   };
 
+  openNotificationWithIcon = (type, title, description) => {
+    notification[type]({
+      message: title,
+      description,
+      duration: 4,
+    });
+  };
+
   handleSubmit = (e) => {
     e.preventDefault();
     const { dispatch, form } = this.props;
@@ -87,9 +98,14 @@ class AppList extends Component {
     setTimeout(() => this.addBtn && this.addBtn.blur(), 0);
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      this.setState({
-        done: true,
-      });
+      this.openNotificationWithIcon('success', '应用添加成功',
+        <div>
+          <span style={{ color: 'green', fontWeight: '600', marginRight: '8px' }}>
+            {fieldsValue.appName}
+          </span>
+          已创建，配置后可用
+        </div>);
+      this.handleDone();
       dispatch({
         type: 'listBasicList/submit',
         payload: {
@@ -110,40 +126,9 @@ class AppList extends Component {
     });
   };
 
-  renderStatus = (status) => {
-    if (status === 'success') {
-      return (
-        <span>运行中</span>
-      );
-    }
-    if (status === 'error') {
-      return (
-        <span>状态异常</span>
-      );
-    }
-    if (status === 'default') {
-      return (
-        <span>已停止</span>
-      );
-    }
-    if (status === 'processing') {
-      return (
-        <span>启动中</span>
-      );
-    }
-    return (
-      <span>未知状态</span>
-    );
-  };
-
   render() {
-    const {
-      cardLoading,
-      visible, done, current = {},
-    } = this.state;
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
+    const { cardLoading, visible, current } = this.state;
+    const { form: { getFieldDecorator } } = this.props;
 
     const editAndDelete = (key, currentItem) => {
       if (key === 'edit') this.showEditModal(currentItem);
@@ -158,16 +143,11 @@ class AppList extends Component {
       }
     };
 
-    const modalFooter = done
-      ? {
-        footer: null,
-        onCancel: this.handleDone,
-      }
-      : {
-        okText: '保存',
-        onOk: this.handleSubmit,
-        onCancel: this.handleCancel,
-      };
+    const modalFooter = {
+      okText: '保存',
+      onOk: this.handleSubmit,
+      onCancel: this.handleCancel,
+    };
 
     const Info = ({ title, value, bordered, status }) => (
       <div className="headerInfo">
@@ -213,10 +193,6 @@ class AppList extends Component {
               <Icon type="reload" style={{ color: 'blue' }} />
               重启
             </Menu.Item>
-            <Menu.Item key="delete">
-              <Icon type="delete" style={{ color: 'red' }} />
-              删除
-            </Menu.Item>
           </Menu>
         )}
       >
@@ -228,83 +204,58 @@ class AppList extends Component {
     );
 
     const getModalContent = () => {
-      if (done) {
-        return (
-          <Result
-            status="success"
-            title="操作成功"
-            subTitle="一系列的信息描述，很短同样也可以带标点。"
-            extra={(
-              <Button type="primary" onClick={this.handleDone}>
-                知道了
-              </Button>
-            )}
-            className="formResult"
-          />
-        );
-      }
-
       return (
         <Form onSubmit={this.handleSubmit}>
           <FormItem label="应用名称" {...this.formLayout}>
-            {getFieldDecorator('title', {
+            {getFieldDecorator('appName', {
               rules: [
                 {
                   required: true,
                   message: '请输入应用名称',
                 },
               ],
-              initialValue: current.title,
-            })(<Input placeholder="请输入" />)}
+              initialValue: current && current.title,
+            })(<Input placeholder="请输入应用名称" />)}
           </FormItem>
-          <FormItem label="开始时间" {...this.formLayout}>
-            {getFieldDecorator('createdAt', {
+          <FormItem {...this.formLayout} label="应用描述">
+            {getFieldDecorator('description', {
               rules: [
                 {
                   required: true,
-                  message: '请选择开始时间',
-                },
-              ],
-              initialValue: current.createdAt ? moment(current.createdAt) : null,
-            })(
-              <DatePicker
-                showTime
-                placeholder="请选择"
-                format="YYYY-MM-DD HH:mm:ss"
-                style={{
-                  width: '100%',
-                }}
-              />,
-            )}
-          </FormItem>
-          <FormItem label="任务负责人" {...this.formLayout}>
-            {getFieldDecorator('owner', {
-              rules: [
-                {
-                  required: true,
-                  message: '请选择任务负责人',
-                },
-              ],
-              initialValue: current.owner,
-            })(
-              <Select placeholder="请选择">
-                <SelectOption value="付晓晓">付晓晓</SelectOption>
-                <SelectOption value="周毛毛">周毛毛</SelectOption>
-              </Select>,
-            )}
-          </FormItem>
-          <FormItem {...this.formLayout} label="产品描述">
-            {getFieldDecorator('subDescription', {
-              rules: [
-                {
-                  message: '请输入至少五个字符的产品描述！',
+                  message: '请输入至少五个字符的应用描述！',
                   min: 5,
                 },
               ],
-              initialValue: current.subDescription,
+              initialValue: current && current.description,
             })(<TextArea rows={4} placeholder="请输入至少五个字符" />)}
           </FormItem>
         </Form>
+      );
+    };
+
+    const renderStatus = (status) => {
+      if (status === 'success') {
+        return (
+          <span>运行中</span>
+        );
+      }
+      if (status === 'error') {
+        return (
+          <span>状态异常</span>
+        );
+      }
+      if (status === 'default') {
+        return (
+          <span>已停止</span>
+        );
+      }
+      if (status === 'processing') {
+        return (
+          <span>启动中</span>
+        );
+      }
+      return (
+        <span>未知状态</span>
       );
     };
 
@@ -320,7 +271,7 @@ class AppList extends Component {
               <h4>
                 <a href={record.href}>{record.appName}</a>
               </h4>
-              <p className="desc">{record.subDescription}</p>
+              <div className="desc">{record.description}</div>
             </div>
           </div>
         ),
@@ -343,7 +294,7 @@ class AppList extends Component {
           <div>
             <Badge status={state} />
             {
-              this.renderStatus(state)
+              renderStatus(state)
             }
           </div>
         ),
@@ -353,9 +304,7 @@ class AppList extends Component {
         key: 'action',
         render: (text, record) => (
           <span>
-            <a>
-              编辑
-            </a>
+            <Button type="link">配置</Button>
             <Divider type="vertical" />
             <MoreBtn key="more" item={record} />
           </span>
@@ -369,7 +318,7 @@ class AppList extends Component {
         owner: 'John Brown',
         href: '',
         appName: 'Alipay',
-        subDescription: '那是一种内在的东西， 他们到达不了，也无法触及的',
+        description: '那是一种内在的东西， 他们到达不了，也无法触及的',
         logo: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
         lastSuccessTime: '2019-08-08 11:12:45',
         address: 'New York No. 1 Lake Park',
@@ -380,7 +329,7 @@ class AppList extends Component {
         owner: 'Jim Green',
         href: '',
         appName: 'Angular',
-        subDescription: '希望是一个好东西，也许是最好的，好东西是不会消亡的',
+        description: '希望是一个好东西，也许是最好的，好东西是不会消亡的',
         logo: 'https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png',
         lastSuccessTime: '2019-08-08 11:12:45',
         address: 'London No. 1 Lake Park',
@@ -391,18 +340,18 @@ class AppList extends Component {
         owner: 'Joe Black',
         href: '',
         appName: 'Ant Design',
-        subDescription: '生命就像一盒巧克力，结果往往出人意料',
+        description: '生命就像一盒巧克力，结果往往出人意料',
         logo: 'https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png',
         lastSuccessTime: '2019-08-08 11:12:45',
         address: 'Sidney No. 1 Lake Park',
         status: 'default',
       },
       {
-        key: '34',
+        key: '4',
         owner: 'Joe Black',
         href: '',
         appName: 'Ant Design Pro',
-        subDescription: '城镇中有那么多的酒馆，她却偏偏走进了我的酒馆',
+        description: '城镇中有那么多的酒馆，她却偏偏走进了我的酒馆',
         logo: 'https://gw.alipayobjects.com/zos/rmsportal/sfjbOqnsXXJgNCjCzDBL.png',
         lastSuccessTime: '2019-08-08 11:12:45',
         address: 'Sidney No. 1 Lake Park',
@@ -463,17 +412,13 @@ class AppList extends Component {
         </Card>
 
         <Modal
-          title={done ? null : `应用${current ? '编辑' : '添加'}`}
+          title="应用添加"
           className="standardListForm"
           width={640}
           bodyStyle={
-            done
-              ? {
-                padding: '72px',
-              }
-              : {
-                padding: '28px',
-              }
+            {
+              padding: '28px 0',
+            }
           }
           destroyOnClose
           visible={visible}
