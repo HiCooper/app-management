@@ -59,6 +59,12 @@ const sideMenuConfig = [
       },
     ],
   },
+  {
+    name: '系统设置',
+    path: '/setting',
+    icon: 'setting',
+    exact: true,
+  },
 ];
 
 export default sideMenuConfig;

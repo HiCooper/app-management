@@ -60,24 +60,27 @@ class BasicLayout extends Component {
           >
             {
               sideMenuConfig.map((item) => {
-                return (
-                  <SubMenu
-                    key={item.path}
-                    title={(
-                      <span>
-                        <Icon type={item.icon} />
-                        <span>{item.name}</span>
-                      </span>
-                    )}
-                  >
-                    {
-                      item.children && item.children.length > 0 ? (
+                if (item.children && item.children.length > 0) {
+                  return (
+                    <SubMenu
+                      key={item.path}
+                      title={(
+                        <span>
+                          <Icon type={item.icon} />
+                          <span>{item.name}</span>
+                        </span>
+                      )}
+                    >
+                      {
                         item.children.map((childItem) => {
                           return <Menu.Item key={item.path + childItem.path}>{childItem.name}</Menu.Item>;
                         })
-                      ) : null
-                    }
-                  </SubMenu>
+                      }
+                    </SubMenu>
+                  );
+                }
+                return (
+                  <Menu.Item key={item.path}>{item.name}</Menu.Item>
                 );
               })
             }
