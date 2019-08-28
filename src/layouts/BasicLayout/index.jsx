@@ -49,7 +49,7 @@ class BasicLayout extends Component {
         >
           <div className="logo">
             <img src={logo} alt="" />
-            <h1>应用运行监控管理系统</h1>
+            <h1>应用运行监控系统</h1>
           </div>
           <Menu theme="dark"
             mode="inline"
@@ -80,7 +80,10 @@ class BasicLayout extends Component {
                   );
                 }
                 return (
-                  <Menu.Item key={item.path}>{item.name}</Menu.Item>
+                  <Menu.Item key={item.path}>
+                    <Icon type={item.icon} />
+                    <span>{item.name}</span>
+                  </Menu.Item>
                 );
               })
             }
