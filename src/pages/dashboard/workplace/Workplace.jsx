@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 
 export default class Workplace extends Component {
   static displayName = 'Workplace';
@@ -10,9 +11,9 @@ export default class Workplace extends Component {
 
   render() {
     return (
-      <div>
+      <PageHeaderWrapper>
         Workplace page
-      </div>
+      </PageHeaderWrapper>
     );
   }
 }

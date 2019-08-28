@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 
 export default class Monitor extends Component {
   static displayName = 'Monitor';
@@ -10,9 +11,9 @@ export default class Monitor extends Component {
 
   render() {
     return (
-      <div>
+      <PageHeaderWrapper>
         Monitor page
-      </div>
+      </PageHeaderWrapper>
     );
   }
 }

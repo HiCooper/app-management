@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
+
 import { routerConfig } from '../../routerConfig';
 import NotFound from '../../components/NotFound';
+import './index.scss';
 
 export default class MainRouter extends Component {
   static displayName = 'MainRouter';

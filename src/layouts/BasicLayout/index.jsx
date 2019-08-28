@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Breadcrumb, Icon, Layout, Menu } from 'antd';
+import { Icon, Layout, Menu } from 'antd';
 import MainRouter from './MainRouter';
 import './index.scss';
 import logo from '../../asserts/logo.svg';
@@ -15,11 +15,11 @@ const { Header, Content, Sider } = Layout;
 class BasicLayout extends Component {
   static displayName = 'BasicLayout';
 
+
   constructor(props) {
     super(props);
     const { pathname } = this.props.location;
     this.state = {
-      pathname,
       collapsed: false,
       defaultOpenKey: [pathname.substr(0, pathname.lastIndexOf('/'))],
       defaultActive: pathname,
@@ -38,7 +38,7 @@ class BasicLayout extends Component {
   };
 
   render() {
-    const { defaultActive, defaultOpenKey, pathname } = this.state;
+    const { defaultActive, defaultOpenKey } = this.state;
     return (
       <Layout className="basic-layout">
         <Sider width={256}
@@ -93,27 +93,7 @@ class BasicLayout extends Component {
             <Index />
           </Header>
           <Content>
-            <div className="page-header">
-              <Breadcrumb>
-                {
-                  pathname !== '/' ? pathname.split('/').map((item) => {
-                    return (
-                      <Breadcrumb.Item key={item}>{item}</Breadcrumb.Item>
-
-                    );
-                  }) : null
-                }
-              </Breadcrumb>
-            </div>
-            <div className="main-content"
-              style={{
-                margin: '24px 24px 0',
-                minHeight: 280,
-                flex: 'auto',
-              }}
-            >
-              <MainRouter />
-            </div>
+            <MainRouter />
           </Content>
         </Layout>
       </Layout>

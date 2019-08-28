@@ -5,6 +5,7 @@ import Monitor from './pages/dashboard/monitor/Monitor';
 import Workplace from './pages/dashboard/workplace/Workplace';
 import ProjectList from './pages/project/list';
 import AppList from './pages/app/list';
+import AppDetail from './pages/app/detail';
 import AppConfig from './pages/app/config';
 import RegisterResult from './pages/user/register-result';
 
@@ -49,6 +50,11 @@ const routerConfig = [
         name: '列表',
         path: '/list',
         component: AppList,
+      },
+      {
+        name: '详情',
+        path: '/detail',
+        component: AppDetail,
       },
       {
         name: '配置',

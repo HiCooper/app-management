@@ -6,20 +6,21 @@ import {
   Card,
   Col,
   Divider,
-  Dropdown,
   Form,
-  Icon,
   Input,
-  Menu,
   Modal,
   notification,
   Radio,
   Row,
+  Select,
   Table,
 } from 'antd';
 import { findDOMNode } from 'react-dom';
 import './style.less';
+import { Link } from 'react-router-dom';
+import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 
+const { Option } = Select;
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -58,13 +59,6 @@ class AppList extends Component {
     this.setState({
       visible: true,
       current: undefined,
-    });
-  };
-
-  showEditModal = (item) => {
-    this.setState({
-      visible: true,
-      current: item,
     });
   };
 
@@ -116,32 +110,14 @@ class AppList extends Component {
     });
   };
 
-  deleteItem = (id) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'listBasicList/submit',
-      payload: {
-        id,
-      },
-    });
+  goPage = (route, appId, e) => {
+    e.preventDefault();
+    this.props.history.push(`${route}?appId=${appId}`);
   };
 
   render() {
     const { cardLoading, visible, current } = this.state;
     const { form: { getFieldDecorator } } = this.props;
-
-    const editAndDelete = (key, currentItem) => {
-      if (key === 'edit') this.showEditModal(currentItem);
-      else if (key === 'delete') {
-        Modal.confirm({
-          title: '删除任务',
-          content: '确定删除该任务吗？',
-          okText: '确认',
-          cancelText: '取消',
-          onOk: () => this.deleteItem(currentItem.id),
-        });
-      }
-    };
 
     const modalFooter = {
       okText: '保存',
@@ -166,7 +142,7 @@ class AppList extends Component {
           <RadioButton value="progress">已停止</RadioButton>
           <RadioButton value="waiting">状态异常</RadioButton>
         </RadioGroup>
-        <Search className="extraContentSearch" placeholder="请输入" onSearch={() => ({})} />
+        <Search className="extraContentSearch" placeholder="请输入应用名称/所有者" onSearch={() => ({})} />
       </div>
     );
 
@@ -177,31 +153,54 @@ class AppList extends Component {
       total: 50,
     };
 
-    const MoreBtn = ({ item }) => (
-      <Dropdown
-        overlay={(
-          <Menu onClick={({ key }) => editAndDelete(key, item)}>
-            <Menu.Item key="start">
-              <Icon type="play-circle" style={{ color: 'green' }} />
-              启动
-            </Menu.Item>
-            <Menu.Item key="stop">
-              <Icon type="poweroff" style={{ color: '#ccc' }} />
-              停止
-            </Menu.Item>
-            <Menu.Item key="restart">
-              <Icon type="reload" style={{ color: 'blue' }} />
-              重启
-            </Menu.Item>
-          </Menu>
-        )}
-      >
-        <Button>
-          更多
-          <Icon type="down" />
-        </Button>
-      </Dropdown>
-    );
+    const renderState = (state) => {
+      if (state === 'success') {
+        return (
+          <div>
+            <Badge status={state} />
+            <span>运行中</span>
+          </div>
+        );
+      }
+      if (state === 'error') {
+        return (
+          <div>
+            <Badge status={state} />
+            <span>状态异常</span>
+          </div>
+        );
+      }
+      if (state === 'default') {
+        return (
+          <div>
+            <Badge status={state} />
+            <span>已停止</span>
+          </div>
+        );
+      }
+      if (state === 'processing') {
+        return (
+          <div>
+            <Badge status={state} />
+            <span>启动中</span>
+          </div>
+        );
+      }
+      return (
+        <div>
+          <Badge status="warning" />
+          <span>未知状态</span>
+        </div>
+      );
+    };
+
+    const onChange = (value) => {
+      console.log(`selected ${value}`);
+    };
+
+    const onSearch = (val) => {
+      console.log('search:', val);
+    };
 
     const getModalContent = () => {
       return (
@@ -214,8 +213,30 @@ class AppList extends Component {
                   message: '请输入应用名称',
                 },
               ],
-              initialValue: current && current.title,
+              initialValue: current && current.appName,
             })(<Input placeholder="请输入应用名称" />)}
+          </FormItem>
+          <FormItem label="所属项目" {...this.formLayout}>
+            {getFieldDecorator('projectId', {
+              rules: [
+                {
+                  required: true,
+                  message: '请输入应用名称',
+                },
+              ],
+              initialValue: current && current.projectId,
+            })(
+              <Select
+                showSearch
+                placeholder="请选择所属项目"
+                onChange={onChange}
+                onSearch={onSearch}
+              >
+                <Option value="1">八卦</Option>
+                <Option value="2">洛书</Option>
+                <Option value="3">司南</Option>
+              </Select>
+            )}
           </FormItem>
           <FormItem {...this.formLayout} label="应用描述">
             {getFieldDecorator('description', {
@@ -233,35 +254,9 @@ class AppList extends Component {
       );
     };
 
-    const renderStatus = (status) => {
-      if (status === 'success') {
-        return (
-          <span>运行中</span>
-        );
-      }
-      if (status === 'error') {
-        return (
-          <span>状态异常</span>
-        );
-      }
-      if (status === 'default') {
-        return (
-          <span>已停止</span>
-        );
-      }
-      if (status === 'processing') {
-        return (
-          <span>启动中</span>
-        );
-      }
-      return (
-        <span>未知状态</span>
-      );
-    };
-
     const columns = [
       {
-        title: 'Name',
+        title: '应用名称',
         dataIndex: 'appName',
         key: 'appName',
         render: (text, record) => (
@@ -269,7 +264,7 @@ class AppList extends Component {
             <Avatar src={record.logo} shape="square" size="large" style={{ marginRight: 16 }} />
             <div>
               <h4>
-                <a href={record.href}>{record.appName}</a>
+                <Link to={`/app/detail?appId=${record.id}`}>{record.appName}</Link>
               </h4>
               <div className="desc">{record.description}</div>
             </div>
@@ -277,7 +272,7 @@ class AppList extends Component {
         ),
       },
       {
-        title: 'owner',
+        title: '所有者',
         dataIndex: 'owner',
         key: 'owner',
       },
@@ -288,25 +283,20 @@ class AppList extends Component {
       },
       {
         title: '状态',
-        key: 'status',
-        dataIndex: 'status',
-        render: state => (
-          <div>
-            <Badge status={state} />
-            {
-              renderStatus(state)
-            }
-          </div>
-        ),
+        key: 'state',
+        dataIndex: 'state',
+        render: (text) => {
+          return renderState(text);
+        },
       },
       {
-        title: 'Action',
+        title: '操作',
         key: 'action',
         render: (text, record) => (
           <span>
-            <Button type="link">配置</Button>
+            <Button type="link" onClick={e => this.goPage('/app/config', record.id, e)}>配置</Button>
             <Divider type="vertical" />
-            <MoreBtn key="more" item={record} />
+            <Button type="link" onClick={e => this.goPage('/app/detail', record.id, e)}>详情</Button>
           </span>
         ),
       },
@@ -316,51 +306,47 @@ class AppList extends Component {
       {
         key: '1',
         owner: 'John Brown',
-        href: '',
         appName: 'Alipay',
         description: '那是一种内在的东西， 他们到达不了，也无法触及的',
         logo: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
         lastSuccessTime: '2019-08-08 11:12:45',
         address: 'New York No. 1 Lake Park',
-        status: 'success',
+        state: 'success',
       },
       {
         key: '2',
         owner: 'Jim Green',
-        href: '',
         appName: 'Angular',
         description: '希望是一个好东西，也许是最好的，好东西是不会消亡的',
         logo: 'https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png',
         lastSuccessTime: '2019-08-08 11:12:45',
         address: 'London No. 1 Lake Park',
-        status: 'error',
+        state: 'default',
       },
       {
         key: '3',
         owner: 'Joe Black',
-        href: '',
         appName: 'Ant Design',
         description: '生命就像一盒巧克力，结果往往出人意料',
         logo: 'https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png',
         lastSuccessTime: '2019-08-08 11:12:45',
         address: 'Sidney No. 1 Lake Park',
-        status: 'default',
+        state: 'processing',
       },
       {
         key: '4',
         owner: 'Joe Black',
-        href: '',
         appName: 'Ant Design Pro',
         description: '城镇中有那么多的酒馆，她却偏偏走进了我的酒馆',
         logo: 'https://gw.alipayobjects.com/zos/rmsportal/sfjbOqnsXXJgNCjCzDBL.png',
         lastSuccessTime: '2019-08-08 11:12:45',
         address: 'Sidney No. 1 Lake Park',
-        status: 'processing',
+        state: 'error',
       },
     ];
 
     return (
-      <div className="standardList">
+      <PageHeaderWrapper className="standardList">
         <Card bordered={false}>
           <Row>
             <Col sm={8} xs={24}>
@@ -406,7 +392,7 @@ class AppList extends Component {
           <Table
             columns={columns}
             dataSource={data}
-            showHeader={false}
+            showHeader
             pagination={paginationProps}
           />
         </Card>
@@ -426,7 +412,7 @@ class AppList extends Component {
         >
           {getModalContent()}
         </Modal>
-      </div>
+      </PageHeaderWrapper>
 
     );
   }

@@ -3,7 +3,7 @@
  */
 import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import React from 'react';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, BackTop } from 'antd';
 import zhCN from 'antd/es/locale/zh_CN';
 import BasicLayout from './layouts/BasicLayout';
 import BlankLayout from './layouts/UserLayout';
@@ -15,6 +15,7 @@ import BlankLayout from './layouts/UserLayout';
 const router = () => {
   return (
     <ConfigProvider locale={zhCN}>
+      <BackTop />
       <HashRouter>
         <Switch>
           <Redirect exact strict from="/" to="/dashboard/analysis" />
