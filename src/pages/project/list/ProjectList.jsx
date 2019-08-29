@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Card, Icon, List, Typography } from 'antd';
 import './style.less';
+import { Link } from 'react-router-dom';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import { fakeList } from './_mock';
 
@@ -50,11 +51,11 @@ export default class ProjectList extends Component {
                     <Card
                       hoverable
                       className="card"
-                      actions={[<a key="option1">查看</a>, <a key="option2">编辑</a>]}
+                      actions={[<Link to="/" key="option1">查看</Link>, <Link to="/" key="option2">编辑</Link>]}
                     >
                       <Card.Meta
                         avatar={<img alt="" className="cardAvatar" src={item.avatar} />}
-                        title={<a>{item.title}</a>}
+                        title={item.title}
                         description={(
                           <Paragraph
                             className="item"

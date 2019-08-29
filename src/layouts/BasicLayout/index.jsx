@@ -46,6 +46,9 @@ class BasicLayout extends Component {
           collapsible
           collapsed={this.state.collapsed}
           className="menu-sider"
+          style={{
+            height: '100vh',
+          }}
         >
           <div className="logo">
             <img src={logo} alt="" />
@@ -89,7 +92,12 @@ class BasicLayout extends Component {
             }
           </Menu>
         </Sider>
-        <Layout>
+        <Layout
+          style={{
+            height: '100vh',
+            overflow: 'hidden',
+          }}
+        >
           <Header style={{ background: '#fff', padding: 0 }} className="global-header">
             <Icon
               className="trigger"

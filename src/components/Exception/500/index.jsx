@@ -1,4 +1,4 @@
-import { Result, Button } from 'antd';
+import { Button, Result } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -16,6 +16,6 @@ export default () => (
           返回首页
         </Button>
       </Link>
-)}
+    )}
   />
 );

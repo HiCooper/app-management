@@ -8,6 +8,7 @@ import AppList from './pages/app/list';
 import AppDetail from './pages/app/detail';
 import AppConfig from './pages/app/config';
 import ServerList from './pages/server/list';
+import Setting from './pages/setting';
 import RegisterResult from './pages/user/register-result';
 
 const routerConfig = [
@@ -74,6 +75,11 @@ const routerConfig = [
         component: AppConfig,
       },
     ],
+  },
+  {
+    path: '/setting',
+    name: '系统设置',
+    component: Setting,
   },
 ];
 
