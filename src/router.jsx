@@ -1,9 +1,9 @@
 /**
  * 定义应用路由
  */
-import {HashRouter, Redirect, Route, Switch} from 'react-router-dom';
+import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import React from 'react';
-import {BackTop, ConfigProvider} from 'antd';
+import { BackTop, ConfigProvider } from 'antd';
 import zhCN from 'antd/es/locale/zh_CN';
 import BasicLayout from './layouts/BasicLayout';
 import BlankLayout from './layouts/UserLayout';
@@ -15,12 +15,12 @@ import BlankLayout from './layouts/UserLayout';
 const router = () => {
   return (
     <ConfigProvider locale={zhCN}>
-      <BackTop/>
+      <BackTop />
       <HashRouter>
         <Switch>
-          <Redirect exact strict from="/" to="/app/list"/>
-          <Route path="/user/*" component={BlankLayout}/>
-          <Route path="/" component={BasicLayout}/>
+          <Redirect exact strict from="/" to="/app/list" />
+          <Route path="/user/*" component={BlankLayout} />
+          <Route path="/" component={BasicLayout} />
         </Switch>
       </HashRouter>
     </ConfigProvider>

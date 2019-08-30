@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import {Breadcrumb} from 'antd';
-import {Link} from 'react-router-dom';
+import React, { Component } from 'react';
+import { Breadcrumb } from 'antd';
+import { Link } from 'react-router-dom';
 import './style.less';
 
-import {getBreadNamesByPathname} from '../../util/sys';
+import { getBreadNamesByPathname } from '../../util/sys';
 
 export default class PageHeaderWrapper extends Component {
   static displayName = 'PageHeaderWrapper';
@@ -15,7 +15,7 @@ export default class PageHeaderWrapper extends Component {
 
 
   render() {
-    const {title, content, extraContent, footer, children, className} = this.props;
+    const { title, content, extraContent, footer, children, className } = this.props;
     const urlHash = window.location.hash;
     const index = urlHash.indexOf('?');
     const pathname = urlHash.substr(1, index === -1 ? urlHash.length - 1 : index - 1);
@@ -68,11 +68,11 @@ export default class PageHeaderWrapper extends Component {
         </div>
 
         <div className="page-content"
-             style={{
-               margin: '24px 24px',
-               minHeight: 280,
-               flex: 'auto',
-             }}
+          style={{
+            margin: '24px 24px',
+            minHeight: 280,
+            flex: 'auto',
+          }}
         >
           {children}
         </div>

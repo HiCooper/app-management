@@ -1,9 +1,9 @@
-import {Dropdown} from 'antd';
+import { Dropdown } from 'antd';
 import React from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
 
-const HeaderDropdown = ({...restProps}) => (
+const HeaderDropdown = ({ ...restProps }) => (
   <Dropdown overlayClassName={classNames(styles.container)} {...restProps} />
 );
 

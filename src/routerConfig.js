@@ -106,4 +106,4 @@ const userRouterConfig = [
     ],
   },
 ];
-export {routerConfig, userRouterConfig};
+export { routerConfig, userRouterConfig };

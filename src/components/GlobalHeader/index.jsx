@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import './index.less';
 
 import AvatarDropdown from './AvatarDropdown';
@@ -14,7 +14,7 @@ export default class Index extends Component {
   render() {
     return (
       <div className="right">
-        <AvatarDropdown/>
+        <AvatarDropdown />
       </div>
     );
   }
