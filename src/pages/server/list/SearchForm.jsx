@@ -4,6 +4,7 @@ import { Button, Col, Form, Input, Row, Select } from 'antd';
 const FormItem = Form.Item;
 const { Option } = Select;
 
+
 class SearchForm extends Component {
   static displayName = 'SearchForm';
 
@@ -76,10 +77,10 @@ class SearchForm extends Component {
                 )}
               </FormItem>
             </Col>
-            <Col md={8} sm={24}>
-              <span className="submitButtons">
+            <Col md={8} sm={24} className="submitButtons">
+              <div>
                 <Button type="primary" htmlType="submit">
-                查询
+                  查询
                 </Button>
                 <Button
                   style={{
@@ -87,9 +88,9 @@ class SearchForm extends Component {
                   }}
                   onClick={this.handleFormReset}
                 >
-                重置
+                  重置
                 </Button>
-              </span>
+              </div>
             </Col>
           </Row>
         </Form>

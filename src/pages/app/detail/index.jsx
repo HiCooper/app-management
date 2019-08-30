@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import './style.less';
-import { Badge, Button, Card, Descriptions, Divider, Icon, Table } from 'antd';
+import { Badge, Button, Card, Descriptions, Divider, Icon, message, Modal, Progress, Steps, Table, Tooltip } from 'antd';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
-
 
 const progressColumns = [
   {
@@ -27,6 +26,8 @@ const progressColumns = [
   },
 ];
 
+const { Step } = Steps;
+const { confirm } = Modal;
 
 const statusMap = ['default', 'processing', 'success', 'error'];
 const status = ['已关闭', '启动中', '运行中', '异常'];
@@ -43,14 +44,68 @@ export default class AppDetail extends Component {
         basicGoods: [],
         basicProgress: [],
       },
+      handlerStatusModelVisible: false,
     };
   }
 
   componentDidMount() {
   }
 
+  startApp = (e) => {
+    e.preventDefault();
+    this.showModal();
+  };
+
+  stopApp = (e) => {
+    e.preventDefault();
+    this.showModal();
+  };
+
+  restartApp = (e) => {
+    e.preventDefault();
+    this.showModal();
+  };
+
+  showModal = () => {
+    this.setState({
+      handlerStatusModelVisible: true,
+    });
+  };
+
+  getTaskDetail = (e) => {
+    e.preventDefault();
+    this.showModal();
+  };
+
+  handleCancel = () => {
+    this.setState({ handlerStatusModelVisible: false });
+  };
+
+  showStopTaskConfirm = () => {
+    const that = this;
+    confirm({
+      title: '确定要中止正在运行的任务吗?',
+      content: '任务执行将会中止，程序可能停止运行',
+      okText: '确定',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk() {
+        that.stopTask();
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
+
+  stopTask = () => {
+    const hide = message.loading('正在中止任务执行..', 0);
+    // Dismiss manually and asynchronously
+    setTimeout(hide, 2500);
+  };
+
   render() {
-    const { profileBasic, loading } = this.state;
+    const { profileBasic, loading, handlerStatusModelVisible } = this.state;
     const { basicGoods, basicProgress } = profileBasic;
     let goodsData = [];
 
@@ -136,12 +191,12 @@ export default class AppDetail extends Component {
         key: 'ip',
       },
       {
-        title: 'PORT',
+        title: '端口',
         dataIndex: 'port',
         key: 'port',
       },
       {
-        title: 'STATE',
+        title: '状态',
         dataIndex: 'state',
         key: 'state',
         render(val) {
@@ -149,24 +204,57 @@ export default class AppDetail extends Component {
         },
       },
       {
-        title: 'Action',
+        title: '进行中任务',
+        dataIndex: 'task',
+        key: 'task',
+        render: (text, record) => {
+          if (text) {
+            return (
+              <div>
+                <span>{text}</span>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Tooltip title="点击查看详情" placement="left">
+                    <Progress
+                      className="progress-task"
+                      onClick={e => this.getTaskDetail(e)}
+                      percent={record.percent}
+                      status={record.percent >= 100 ? 'done' : 'active'}
+                    />
+                  </Tooltip>
+                  <Tooltip title="结束任务">
+                    <a style={{ padding: '5px', margin: '5px' }} onClick={this.showStopTaskConfirm}>
+                      <Icon type="close-circle" />
+                    </a>
+                  </Tooltip>
+                </div>
+              </div>
+            );
+          }
+        },
+      },
+      {
+        title: '操作',
         key: 'action',
         align: 'right',
-        render: () => (
-          <span>
-            <Button type="link">
-              <Icon type="caret-right" />
-            </Button>
-            <Divider type="vertical" />
-            <Button type="link">
-              <Icon type="poweroff" />
-            </Button>
-            <Divider type="vertical" />
-            <Button type="link">
-              <Icon type="reload" />
-            </Button>
-          </span>
-        ),
+        render: (text, record) => {
+          if (!record.task || record.percent >= 100) {
+            return (
+              <div>
+                <Button type="link" onClick={e => this.startApp(e)}>
+                  <Icon type="caret-right" />
+                </Button>
+                <Divider type="vertical" />
+                <Button type="link" onClick={e => this.stopApp(e)}>
+                  <Icon type="poweroff" />
+                </Button>
+                <Divider type="vertical" />
+                <Button type="link" onClick={e => this.restartApp(e)}>
+                  <Icon type="reload" />
+                </Button>
+              </div>
+            );
+          }
+        },
       },
     ];
 
@@ -182,6 +270,8 @@ export default class AppDetail extends Component {
         ip: '192.168.2.124',
         port: 8970,
         state: '1',
+        task: '构建中',
+        percent: 28,
       },
       {
         key: '3',
@@ -244,6 +334,26 @@ export default class AppDetail extends Component {
             columns={progressColumns}
           />
         </Card>
+        <Modal
+          visible={handlerStatusModelVisible}
+          title="192.168.2.124(启动)"
+          onCancel={this.handleCancel}
+          destroyOnClose
+          footer={[
+            <Button key="close" onClick={this.handleCancel}>
+              关闭
+            </Button>,
+          ]}
+        >
+          <Steps direction="vertical" size="small" current={1}>
+            <Step status="finish" title="更新源代码" description="从git拉取或更新源代码" />
+            <Step status="process" title="打包构建" description="构建jar或war包" icon={<Icon type="loading" />} />
+            <Step status="wait" title="构建Docker镜像" description="构建Docker镜像" />
+            <Step status="wait" title="上传镜像" description="上传镜像到云库" />
+            <Step status="wait" title="备份旧版镜像" description="备份旧版镜像" />
+            <Step status="wait" title="运行新镜像容器" description="从云库拉取最新镜像并启动" />
+          </Steps>
+        </Modal>
       </PageHeaderWrapper>
     );
   }

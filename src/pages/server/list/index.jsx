@@ -35,7 +35,7 @@ const columns = [
   {
     title: '操作',
     key: 'action',
-    render: (text, record) => (
+    render: () => (
       <span>
         <Link to="/">配置 </Link>
       </span>

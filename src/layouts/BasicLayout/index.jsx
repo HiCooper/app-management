@@ -42,6 +42,7 @@ class BasicLayout extends Component {
     return (
       <Layout className="basic-layout">
         <Sider width={256}
+          breakpoint="lg"
           trigger={null}
           collapsible
           collapsed={this.state.collapsed}

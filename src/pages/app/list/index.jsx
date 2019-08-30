@@ -252,7 +252,7 @@ class AppList extends Component {
         key: 'lastSuccessTime',
       },
       {
-        title: '状态',
+        title: '最近状态',
         key: 'state',
         dataIndex: 'state',
         filters: [
