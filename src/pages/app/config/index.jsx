@@ -105,17 +105,6 @@ class AppConfig extends Component {
     return (
       <PageHeaderWrapper className="app-config-home">
         <Card bordered={false}>
-          <Alert
-            message="注意"
-            description="1. 自定义运行目录请确保部署服务器上该目录存在"
-            type="info"
-            showIcon
-          />
-          <Divider
-            style={{
-              marginBottom: 32,
-            }}
-          />
           <Form
             onSubmit={this.handleSubmit}
             style={{
@@ -290,6 +279,16 @@ class AppConfig extends Component {
                 保存
               </Button>
             </FormItem>
+            <Alert
+              message="自定义运行目录请确保部署服务器上该目录存在"
+              type="info"
+              showIcon
+            />
+            <Divider
+              style={{
+                marginBottom: 32,
+              }}
+            />
           </Form>
           <Button type="danger" onClick={this.deleteAppModalShow} style={{ float: 'right' }}>
             删除应用

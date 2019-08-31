@@ -19,9 +19,10 @@ class BasicLayout extends Component {
   constructor(props) {
     super(props);
     const { pathname } = this.props.location;
+    const firstPath = [pathname.substr(0, pathname.lastIndexOf('/'))];
     this.state = {
       collapsed: false,
-      defaultOpenKey: [pathname.substr(0, pathname.lastIndexOf('/'))],
+      defaultOpenKey: firstPath,
       defaultActive: pathname,
     };
   }

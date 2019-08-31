@@ -222,9 +222,9 @@ export default class AppDetail extends Component {
                     />
                   </Tooltip>
                   <Tooltip title="结束任务">
-                    <a style={{ padding: '5px', margin: '5px' }} onClick={this.showStopTaskConfirm}>
+                    <div className="mini-btn" onClick={this.showStopTaskConfirm}>
                       <Icon type="close-circle" />
-                    </a>
+                    </div>
                   </Tooltip>
                 </div>
               </div>
