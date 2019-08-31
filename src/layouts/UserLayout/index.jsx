@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Layout } from 'antd';
-import './indes.scss';
+import './style.less';
 import UserRouter from './UserRouter';
 
 const { Header, Footer, Content } = Layout;
