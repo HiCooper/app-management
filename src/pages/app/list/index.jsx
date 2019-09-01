@@ -124,9 +124,9 @@ class AppList extends Component {
       onCancel: this.handleCancel,
     };
 
-    const Info = ({ title, value, bordered, status }) => (
+    const Info = ({ title, value, bordered, state }) => (
       <div className="headerInfo">
-        <Badge status={status} />
+        <Badge status={state} />
         <span>{title}</span>
         <p>{value}</p>
         {bordered && <em />}
@@ -141,7 +141,7 @@ class AppList extends Component {
           <RadioButton value="progress">已停止</RadioButton>
           <RadioButton value="waiting">状态异常</RadioButton>
         </RadioGroup>
-        <Search className="extraContentSearch" placeholder="请输入应用名称/所有者" onSearch={() => ({})} />
+        <Search className="extraContentSearch" placeholder="请输入应用名称/所属项目/所有者" onSearch={() => ({})} />
       </div>
     );
 
@@ -241,6 +241,11 @@ class AppList extends Component {
         ),
       },
       {
+        title: '所属项目',
+        dataIndex: 'project',
+        key: 'project',
+      },
+      {
         title: '所有者',
         dataIndex: 'owner',
         key: 'owner',
@@ -300,6 +305,7 @@ class AppList extends Component {
         lastSuccessTime: '2019-08-08 04:12:45',
         address: 'New York No. 1 Lake Park',
         state: '1',
+        project: 'a',
       },
       {
         key: '2',
@@ -310,6 +316,7 @@ class AppList extends Component {
         lastSuccessTime: '2019-08-08 03:12:45',
         address: 'London No. 1 Lake Park',
         state: '2',
+        project: 'b',
       },
       {
         key: '3',
@@ -320,6 +327,7 @@ class AppList extends Component {
         lastSuccessTime: '2019-08-08 02:12:45',
         address: 'Sidney No. 1 Lake Park',
         state: '3',
+        project: 'c',
       },
       {
         key: '4',
@@ -338,13 +346,13 @@ class AppList extends Component {
         <Card bordered={false}>
           <Row>
             <Col sm={8} xs={24}>
-              <Info title="运行中" value="8个" bordered status="success" />
+              <Info title="运行中" value="8个" bordered state="success" />
             </Col>
             <Col sm={8} xs={24}>
-              <Info title="已停止" value="32" bordered status="default" />
+              <Info title="已停止" value="32" bordered state="default" />
             </Col>
             <Col sm={8} xs={24}>
-              <Info title="状态异常" value="24个" status="error" />
+              <Info title="状态异常" value="24个" state="error" />
             </Col>
           </Row>
         </Card>
