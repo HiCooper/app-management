@@ -1,6 +1,7 @@
 import { Button, Result } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import DocumentTitle from 'react-document-title';
 import styles from './style.less';
 
 const actions = (
@@ -17,17 +18,19 @@ const actions = (
 );
 
 const RegisterResult = () => (
-  <Result
-    className={styles.registerResult}
-    status="success"
-    title={(
-      <div className={styles.title}>
-        <span>注册成功!</span>
-      </div>
+  <DocumentTitle title="注册成功-应用运行监控系统">
+    <Result
+      className={styles.registerResult}
+      status="success"
+      title={(
+        <div className={styles.title}>
+          <span>注册成功!</span>
+        </div>
     )}
-    subTitle="激活邮箱"
-    extra={actions}
-  />
+      subTitle="激活邮箱"
+      extra={actions}
+    />
+  </DocumentTitle>
 );
 
 export default RegisterResult;
