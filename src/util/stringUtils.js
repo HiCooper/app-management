@@ -15,6 +15,16 @@ export function getParamsFromUrl(url) {
   return params;
 }
 
+export function getUuid() {
+  /**
+   * @return {string}
+   */
+  function S4() {
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  }
+  return (`${S4() + S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`);
+}
+
 export function getPathnameFromUrl(url) {
   if (!url || url.length === 0 || url.indexOf('?') === -1) {
     return url;

@@ -19,6 +19,7 @@ import { findDOMNode } from 'react-dom';
 import './style.less';
 import { Link } from 'react-router-dom';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
+import { ListAppApi } from '../../../api/app';
 
 const { Option } = Select;
 const FormItem = Form.Item;
@@ -36,6 +37,9 @@ class AppList extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      appListData: [],
+      pageSize: 10,
+      total: 0,
       cardLoading: false,
       visible: false,
       current: undefined,
@@ -56,7 +60,16 @@ class AppList extends Component {
   }
 
   initData = () => {
-
+    ListAppApi().then((res) => {
+      if (res.code === '200') {
+        this.setState({
+          appListData: res.data && res.data.records,
+          total: res.data.total,
+        });
+      }
+    }).catch((e) => {
+      console.error(e);
+    });
   };
 
   showModal = () => {
@@ -115,9 +128,14 @@ class AppList extends Component {
   };
 
   render() {
-    const { cardLoading, visible, current } = this.state;
+    const { cardLoading, visible, current, appListData, pageSize, total } = this.state;
     const { form: { getFieldDecorator } } = this.props;
-
+    const paginationProps = {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      pageSize,
+      total,
+    };
     const modalFooter = {
       okText: '保存',
       onOk: this.handleSubmit,
@@ -144,13 +162,6 @@ class AppList extends Component {
         <Search className="extraContentSearch" placeholder="请输入应用名称/所属项目/所有者" onSearch={() => ({})} />
       </div>
     );
-
-    const paginationProps = {
-      showSizeChanger: true,
-      showQuickJumper: true,
-      pageSize: 5,
-      total: 50,
-    };
 
     const onChange = (value) => {
       console.log(`selected ${value}`);
@@ -295,52 +306,6 @@ class AppList extends Component {
       },
     ];
 
-    const data = [
-      {
-        key: '1',
-        owner: 'John Brown',
-        appName: 'Alipay',
-        description: '那是一种内在的东西， 他们到达不了，也无法触及的',
-        logo: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
-        lastSuccessTime: '2019-08-08 04:12:45',
-        address: 'New York No. 1 Lake Park',
-        state: '1',
-        project: 'a',
-      },
-      {
-        key: '2',
-        owner: 'Jim Green',
-        appName: 'Angular',
-        description: '希望是一个好东西，也许是最好的，好东西是不会消亡的',
-        logo: 'https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png',
-        lastSuccessTime: '2019-08-08 03:12:45',
-        address: 'London No. 1 Lake Park',
-        state: '2',
-        project: 'b',
-      },
-      {
-        key: '3',
-        owner: 'Joe Black',
-        appName: 'Ant Design',
-        description: '生命就像一盒巧克力，结果往往出人意料',
-        logo: 'https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png',
-        lastSuccessTime: '2019-08-08 02:12:45',
-        address: 'Sidney No. 1 Lake Park',
-        state: '3',
-        project: 'c',
-      },
-      {
-        key: '4',
-        owner: 'Joe Black',
-        appName: 'Ant Design Pro',
-        description: '城镇中有那么多的酒馆，她却偏偏走进了我的酒馆',
-        logo: 'https://gw.alipayobjects.com/zos/rmsportal/sfjbOqnsXXJgNCjCzDBL.png',
-        lastSuccessTime: '2019-08-08 01:12:45',
-        address: 'Sidney No. 1 Lake Park',
-        state: '0',
-      },
-    ];
-
     return (
       <PageHeaderWrapper className="standardList">
         <Card bordered={false}>
@@ -387,7 +352,7 @@ class AppList extends Component {
           </Button>
           <Table
             columns={columns}
-            dataSource={data}
+            dataSource={appListData}
             showHeader
             pagination={paginationProps}
           />

@@ -3,6 +3,7 @@ import { Avatar, Icon, Menu, Spin } from 'antd';
 import HeaderDropdown from '../HeaderDropdown';
 import avatar from '../../asserts/avatar.png';
 import styles from './index.less';
+import {removeAll} from "../../util/auth";
 
 export default class AvatarDropdown extends Component {
   static displayName = 'AvatarDropdown';
@@ -14,6 +15,9 @@ export default class AvatarDropdown extends Component {
 
   onMenuClick = (event) => {
     const { key } = event;
+    if (key === '/user/login') {
+      removeAll();
+    }
     this.goPage(key);
   };
 

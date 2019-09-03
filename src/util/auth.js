@@ -1,3 +1,5 @@
+import { getUuid } from "./stringUtils";
+
 const TokenKey = 'User-Token';
 const RoleKey = 'User-Role';
 const UserInfoKey = 'User-Info';
@@ -28,6 +30,20 @@ export function getUserInfo() {
 
 export function removeAll() {
   localStorage.clear();
+  sessionStorage.clear();
+}
+
+export function getRequestId() {
+  let requestId = sessionStorage.getItem('requestId');
+  if (!requestId) {
+    requestId = getUuid();
+    sessionStorage.setItem('requestId', requestId);
+  }
+  return requestId;
+}
+
+export function updateRequestId() {
+  sessionStorage.setItem('requestId', getUuid());
 }
 
 /**
