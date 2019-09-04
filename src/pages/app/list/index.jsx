@@ -8,6 +8,7 @@ import {
   Divider,
   Form,
   Input,
+  message,
   Modal,
   notification,
   Radio,
@@ -15,11 +16,10 @@ import {
   Select,
   Table,
 } from 'antd';
-import { findDOMNode } from 'react-dom';
 import './style.less';
 import { Link } from 'react-router-dom';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
-import { ListAppApi } from '../../../api/app';
+import { CreateAppApi, ListAppApi } from '../../../api/app';
 
 const { Option } = Select;
 const FormItem = Form.Item;
@@ -42,6 +42,7 @@ class AppList extends Component {
       total: 0,
       cardLoading: false,
       visible: false,
+      createAppBtnLoading: false,
       current: undefined,
     };
   }
@@ -72,7 +73,7 @@ class AppList extends Component {
     });
   };
 
-  showModal = () => {
+  showCreateAppModal = () => {
     this.setState({
       visible: true,
       current: undefined,
@@ -80,14 +81,12 @@ class AppList extends Component {
   };
 
   handleDone = () => {
-    setTimeout(() => this.addBtn && this.addBtn.blur(), 0);
     this.setState({
       visible: false,
     });
   };
 
   handleCancel = () => {
-    setTimeout(() => this.addBtn && this.addBtn.blur(), 0);
     this.setState({
       visible: false,
     });
@@ -103,43 +102,42 @@ class AppList extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const { dispatch, form } = this.props;
-    const { current } = this.state;
-    const id = current ? current.id : '';
-    setTimeout(() => this.addBtn && this.addBtn.blur(), 0);
-    form.validateFields((err, fieldsValue) => {
+    const { form } = this.props;
+    form.validateFields(async (err, fieldsValue) => {
       if (err) return;
-      this.openNotificationWithIcon('success', '应用添加成功',
-        <div>
-          <span style={{ color: 'green', fontWeight: '600', marginRight: '8px' }}>
-            {fieldsValue.appName}
-          </span>
-          已创建，配置后可用
-        </div>);
-      this.handleDone();
-      dispatch({
-        type: 'listBasicList/submit',
-        payload: {
-          id,
-          ...fieldsValue,
-        },
+      await this.setState({
+        createAppBtnLoading: true,
+      });
+      await CreateAppApi(fieldsValue).then((res) => {
+        if (res.code === '200') {
+          this.openNotificationWithIcon('success', '应用添加成功',
+            <div>
+              <span style={{ color: 'green', fontWeight: '600', marginRight: '8px' }}>
+                {fieldsValue.appName}
+              </span>
+              已创建，配置后可用
+            </div>);
+          this.handleDone();
+          this.initData();
+        }
+      }).catch((error) => {
+        console.error(error);
+        message.error('操作失败');
+      });
+      await this.setState({
+        createAppBtnLoading: false,
       });
     });
   };
 
   render() {
-    const { cardLoading, visible, current, appListData, pageSize, total } = this.state;
+    const { cardLoading, visible, current, appListData, pageSize, total, createAppBtnLoading } = this.state;
     const { form: { getFieldDecorator } } = this.props;
     const paginationProps = {
       showSizeChanger: true,
       showQuickJumper: true,
       pageSize,
       total,
-    };
-    const modalFooter = {
-      okText: '保存',
-      onOk: this.handleSubmit,
-      onCancel: this.handleCancel,
     };
 
     const Info = ({ title, value, bordered, state }) => (
@@ -171,80 +169,19 @@ class AppList extends Component {
       console.log('search:', val);
     };
 
-    const getModalContent = () => {
-      return (
-        <Form onSubmit={this.handleSubmit}>
-          <FormItem label="应用名称" {...this.formLayout}>
-            {getFieldDecorator('appName', {
-              rules: [
-                {
-                  required: true,
-                  message: '请输入应用名称',
-                },
-              ],
-              initialValue: current && current.appName,
-            })(<Input placeholder="请输入应用名称" />)}
-          </FormItem>
-          <FormItem label="git(SSH)仓库地址" {...this.formLayout}>
-            {getFieldDecorator('appName', {
-              rules: [
-                {
-                  required: true,
-                  message: '请输入git仓库地址(SSH)!',
-                },
-              ],
-              initialValue: current && current.appName,
-            })(<Input placeholder="git@github.com:xxx/project-a.git" />)}
-          </FormItem>
-          <FormItem label="所属项目" {...this.formLayout}>
-            {getFieldDecorator('projectId', {
-              rules: [
-                {
-                  required: true,
-                  message: '请输入应用名称',
-                },
-              ],
-              initialValue: current && current.projectId,
-            })(
-              <Select
-                showSearch
-                placeholder="请选择所属项目"
-                onChange={onChange}
-                onSearch={onSearch}
-              >
-                <Option value="1">八卦</Option>
-                <Option value="2">洛书</Option>
-                <Option value="3">司南</Option>
-              </Select>
-            )}
-          </FormItem>
-          <FormItem {...this.formLayout} label="应用描述">
-            {getFieldDecorator('description', {
-              rules: [
-                {
-                  required: true,
-                  message: '请输入至少五个字符的应用描述！',
-                  min: 5,
-                },
-              ],
-              initialValue: current && current.description,
-            })(<TextArea rows={4} placeholder="请输入至少五个字符" />)}
-          </FormItem>
-        </Form>
-      );
-    };
-
     const columns = [
       {
         title: '应用名称',
-        dataIndex: 'appName',
-        key: 'appName',
+        dataIndex: 'name',
+        key: 'name',
         render: (text, record) => (
           <div className="app-base-info">
-            <Avatar src={record.logo} shape="square" size="large" style={{ marginRight: 16 }} />
+            <Avatar shape="square" size="large" style={{ marginRight: 16, verticalAlign: 'middle' }}>
+              {record.name.substr(0, 1)}
+            </Avatar>
             <div>
               <h4>
-                <Link to={`/app/detail?appId=${record.id}`}>{record.appName}</Link>
+                <Link to={`/app/detail?appId=${record.id}`}>{record.name}</Link>
               </h4>
               <div className="desc">{record.description}</div>
             </div>
@@ -253,13 +190,13 @@ class AppList extends Component {
       },
       {
         title: '所属项目',
-        dataIndex: 'project',
+        dataIndex: 'projectName',
         key: 'project',
       },
       {
         title: '所有者',
-        dataIndex: 'owner',
-        key: 'owner',
+        dataIndex: 'username',
+        key: 'username',
       },
       {
         title: '上次启动成功时间',
@@ -342,11 +279,7 @@ class AppList extends Component {
               marginBottom: 8,
             }}
             icon="plus"
-            onClick={this.showModal}
-            ref={(component) => {
-              // eslint-disable-next-line  react/no-find-dom-node
-              this.addBtn = findDOMNode(component);
-            }}
+            onClick={this.showCreateAppModal}
           >
             添加
           </Button>
@@ -369,9 +302,66 @@ class AppList extends Component {
           }
           destroyOnClose
           visible={visible}
-          {...modalFooter}
+          okText="保存"
+          okButtonProps={{ loading: createAppBtnLoading }}
+          onOk={this.handleSubmit}
+          onCancel={this.handleCancel}
         >
-          {getModalContent()}
+          <Form>
+            <FormItem label="应用名称" {...this.formLayout}>
+              {getFieldDecorator('name', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入应用名称',
+                  },
+                ],
+              })(<Input placeholder="请输入应用名称" />)}
+            </FormItem>
+            <FormItem label="git(SSH)仓库地址" {...this.formLayout}>
+              {getFieldDecorator('gitUrl', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入git仓库地址(SSH)!',
+                  },
+                ],
+              })(<Input placeholder="git@github.com:xxx/project-a.git" />)}
+            </FormItem>
+            <FormItem label="所属项目" {...this.formLayout}>
+              {getFieldDecorator('projectId', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入应用名称',
+                  },
+                ],
+              })(
+                <Select
+                  showSearch
+                  placeholder="请选择所属项目"
+                  onChange={onChange}
+                  onSearch={onSearch}
+                >
+                  <Option value="1">八卦</Option>
+                  <Option value="2">洛书</Option>
+                  <Option value="3">司南</Option>
+                </Select>
+              )}
+            </FormItem>
+            <FormItem {...this.formLayout} label="应用描述">
+              {getFieldDecorator('description', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入至少五个字符的应用描述！',
+                    min: 5,
+                  },
+                ],
+                initialValue: current && current.description,
+              })(<TextArea rows={4} placeholder="请输入至少五个字符" />)}
+            </FormItem>
+          </Form>
         </Modal>
       </PageHeaderWrapper>
 

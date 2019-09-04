@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
-import { Button, Card, Icon, List, Typography } from 'antd';
+import {Avatar, Button, Card, Form, Icon, List, Typography} from 'antd';
 import './style.less';
 import { Link } from 'react-router-dom';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
-import { fakeList } from './_mock';
+import { ListProjectApi } from '../../../api/project';
 
+import AddProjectModel from './AddProjectModel';
+
+const FormItem = Form.Item;
 const { Paragraph } = Typography;
 export default class ProjectList extends Component {
   static displayName = 'ProjectList';
@@ -12,8 +15,12 @@ export default class ProjectList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      listCardList: [],
+      projectList: [],
       loading: false,
+      total: 0,
+      pageNum: 1,
+      pageSize: 10,
+      addProjectModelVisible: false,
     };
   }
 
@@ -22,20 +29,77 @@ export default class ProjectList extends Component {
   }
 
   initListData = () => {
+    const params = {
+      pageNum: this.state.pageNum,
+      pageSize: this.state.pageSize,
+      keyword: '',
+    };
+    let { projectList } = this.state;
+    ListProjectApi(params).then((res) => {
+      if (res.code === '200') {
+        projectList = projectList.concat(res.data.records);
+        this.setState({
+          projectList,
+          total: res.data.total,
+          loading: false,
+        });
+      }
+    }).catch((err) => {
+      console.error(err);
+    });
+  };
+
+  onLoadMore = async () => {
+    const { pageNum, total } = this.state;
+    if (pageNum < total) {
+      await this.setState({
+        loading: true,
+        pageNum: pageNum + 1,
+      });
+      this.initListData();
+    }
+  };
+
+  createProjectSuccess = () => {
+    this.closeCreateProjectModel();
+    this.initListData();
+  };
+
+  closeCreateProjectModel = () => {
     this.setState({
-      listCardList: fakeList(21),
+      addProjectModelVisible: false,
+    });
+  };
+
+  openCreateProjectModel = () => {
+    this.setState({
+      addProjectModelVisible: true,
     });
   };
 
   render() {
-    const { listCardList, loading } = this.state;
-    const nullData = {};
+    const { projectList, loading, addProjectModelVisible } = this.state;
+    const loadMore = !loading ? (
+      <div
+        style={{
+          textAlign: 'center',
+          marginTop: 12,
+          height: 32,
+          lineHeight: '32px',
+        }}
+      >
+        <Button onClick={this.onLoadMore}>loading more</Button>
+      </div>
+    ) : null;
+
+
     return (
       <PageHeaderWrapper>
         <div className="cardList">
           <List
             rowKey="id"
             loading={loading}
+            loadMore={loadMore}
             grid={{
               gutter: 24,
               lg: 3,
@@ -43,7 +107,7 @@ export default class ProjectList extends Component {
               sm: 1,
               xs: 1,
             }}
-            dataSource={[nullData, ...listCardList]}
+            dataSource={[{}, ...projectList]}
             renderItem={(item) => {
               if (item && item.id) {
                 return (
@@ -54,8 +118,8 @@ export default class ProjectList extends Component {
                       actions={[<Link to="/" key="option1">查看</Link>, <Link to="/" key="option2">编辑</Link>]}
                     >
                       <Card.Meta
-                        avatar={<img alt="" className="cardAvatar" src={item.avatar} />}
-                        title={item.title}
+                        avatar={<Avatar className="cardAvatar" size="large">{item.name.substr(0,1)}</Avatar>}
+                        title={item.name}
                         description={(
                           <Paragraph
                             className="item"
@@ -71,10 +135,9 @@ export default class ProjectList extends Component {
                   </List.Item>
                 );
               }
-
               return (
                 <List.Item>
-                  <Button type="dashed" className="newButton">
+                  <Button type="dashed" className="newButton" onClick={this.openCreateProjectModel}>
                     <Icon type="plus" />
                     新增产品
                   </Button>
@@ -82,6 +145,7 @@ export default class ProjectList extends Component {
               );
             }}
           />
+          <AddProjectModel onClose={this.closeCreateProjectModel} onSubmitSuccess={this.createProjectSuccess} visible={addProjectModelVisible} />
         </div>
       </PageHeaderWrapper>
     );
