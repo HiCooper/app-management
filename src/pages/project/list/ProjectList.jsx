@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import {Avatar, Button, Card, Form, Icon, List, Typography} from 'antd';
+import { Avatar, Button, Card, Icon, List, Typography } from 'antd';
 import './style.less';
 import { Link } from 'react-router-dom';
+import Search from 'antd/es/input/Search';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import { ListProjectApi } from '../../../api/project';
 
 import AddProjectModel from './AddProjectModel';
+import { getColorByWord } from '../../../util/sys';
 
-const FormItem = Form.Item;
 const { Paragraph } = Typography;
 export default class ProjectList extends Component {
   static displayName = 'ProjectList';
@@ -19,7 +20,7 @@ export default class ProjectList extends Component {
       loading: false,
       total: 0,
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 8,
       addProjectModelVisible: false,
     };
   }
@@ -28,40 +29,54 @@ export default class ProjectList extends Component {
     this.initListData();
   }
 
-  initListData = () => {
+  initListData = async () => {
+    const data = await this.getPageData();
+    this.setState({
+      projectList: data,
+    });
+  };
+
+  getPageData = async () => {
+    let result = [];
     const params = {
       pageNum: this.state.pageNum,
       pageSize: this.state.pageSize,
-      keyword: '',
+      keyword: this.state.keyword,
     };
-    let { projectList } = this.state;
-    ListProjectApi(params).then((res) => {
+    await ListProjectApi(params).then((res) => {
       if (res.code === '200') {
-        projectList = projectList.concat(res.data.records);
         this.setState({
-          projectList,
           total: res.data.total,
-          loading: false,
         });
+        result = res.data.records;
       }
     }).catch((err) => {
       console.error(err);
     });
+    return result;
   };
 
   onLoadMore = async () => {
     const { pageNum, total } = this.state;
-    if (pageNum < total) {
+    if (pageNum < total && total > 1) {
       await this.setState({
         loading: true,
         pageNum: pageNum + 1,
       });
-      this.initListData();
+      const { projectList } = this.state;
+      const data = await this.getPageData();
+      this.setState({
+        projectList: projectList.concat(data),
+        loading: false,
+      });
     }
   };
 
-  createProjectSuccess = () => {
+  createProjectSuccess = async () => {
     this.closeCreateProjectModel();
+    await this.setState({
+      pageNum: 1,
+    });
     this.initListData();
   };
 
@@ -77,9 +92,17 @@ export default class ProjectList extends Component {
     });
   };
 
+  goSearchProject = async (value) => {
+    await this.setState({
+      keyword: value.trim(),
+      pageNum: 1,
+    });
+    this.initListData();
+  };
+
   render() {
-    const { projectList, loading, addProjectModelVisible } = this.state;
-    const loadMore = !loading ? (
+    const { projectList, total, loading, addProjectModelVisible } = this.state;
+    const loadMore = projectList.length < total && !loading ? (
       <div
         style={{
           textAlign: 'center',
@@ -92,9 +115,20 @@ export default class ProjectList extends Component {
       </div>
     ) : null;
 
+    const headerSearch = (
+      <div style={{ textAlign: 'center' }}>
+        <Search
+          placeholder="请输入项目名称"
+          enterButton="搜索"
+          size="large"
+          style={{ width: 400 }}
+          onSearch={value => this.goSearchProject(value)}
+        />
+      </div>
+    );
 
     return (
-      <PageHeaderWrapper>
+      <PageHeaderWrapper content={headerSearch}>
         <div className="cardList">
           <List
             rowKey="id"
@@ -110,6 +144,7 @@ export default class ProjectList extends Component {
             dataSource={[{}, ...projectList]}
             renderItem={(item) => {
               if (item && item.id) {
+                const firstWord = item.name.substr(0, 1);
                 return (
                   <List.Item key={item.id}>
                     <Card
@@ -118,7 +153,15 @@ export default class ProjectList extends Component {
                       actions={[<Link to="/" key="option1">查看</Link>, <Link to="/" key="option2">编辑</Link>]}
                     >
                       <Card.Meta
-                        avatar={<Avatar className="cardAvatar" size="large">{item.name.substr(0,1)}</Avatar>}
+                        avatar={(
+                          <Avatar
+                            className="cardAvatar"
+                            style={{ background: getColorByWord(firstWord) }}
+                            size="large"
+                          >
+                            {firstWord}
+                          </Avatar>
+                        )}
                         title={item.name}
                         description={(
                           <Paragraph
@@ -145,7 +188,10 @@ export default class ProjectList extends Component {
               );
             }}
           />
-          <AddProjectModel onClose={this.closeCreateProjectModel} onSubmitSuccess={this.createProjectSuccess} visible={addProjectModelVisible} />
+          <AddProjectModel onClose={this.closeCreateProjectModel}
+            onSubmitSuccess={this.createProjectSuccess}
+            visible={addProjectModelVisible}
+          />
         </div>
       </PageHeaderWrapper>
     );

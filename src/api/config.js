@@ -16,23 +16,28 @@ axios.interceptors.request.use((config) => {
 
 axios.interceptors.response.use((response) => {
   updateRequestId();
-  const { code, msg } = response.data;
+  const { code } = response.data;
   if (response.data.size) {
     return response;
   }
   if (code && code !== '200') {
-    console.error(msg);
-    if (code === 'TOKEN_EXPIRED') {
+    return Promise.reject(code);
+  }
+  return response;
+}, (error) => {
+  const { status, statusText } = error.response;
+  console.log(status, statusText);
+  if (!status) {
+    message.error('系统链接超时');
+  } else {
+    if (status === 403 && statusText === 'Forbidden') {
       removeAll();
       localStorage.clear();
       console.info('登陆过期');
       window.location.replace(`${window.location.protocol}//${window.location.host}/#/user/login`);
     }
-    return Promise.reject(code);
+    message.error(`${error.response.status}, ${error.response.statusText}`);
   }
-  return response;
-}, (error) => {
-  message.error(`${error.response.status}, ${error.response.statusText}`);
   return Promise.reject(error);
 },);
 

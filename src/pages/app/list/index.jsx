@@ -20,6 +20,7 @@ import './style.less';
 import { Link } from 'react-router-dom';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import { CreateAppApi, ListAppApi } from '../../../api/app';
+import CacheService from '../../../cacheService';
 
 const { Option } = Select;
 const FormItem = Form.Item;
@@ -44,6 +45,7 @@ class AppList extends Component {
       visible: false,
       createAppBtnLoading: false,
       current: undefined,
+      projectOption: [],
     };
   }
 
@@ -60,7 +62,7 @@ class AppList extends Component {
     this.initData();
   }
 
-  initData = () => {
+  initData = async () => {
     ListAppApi().then((res) => {
       if (res.code === '200') {
         this.setState({
@@ -70,6 +72,10 @@ class AppList extends Component {
       }
     }).catch((e) => {
       console.error(e);
+    });
+    const projectOption = await CacheService.getProjectOption();
+    this.setState({
+      projectOption,
     });
   };
 
@@ -131,7 +137,7 @@ class AppList extends Component {
   };
 
   render() {
-    const { cardLoading, visible, current, appListData, pageSize, total, createAppBtnLoading } = this.state;
+    const { cardLoading, visible, current, appListData, pageSize, total, createAppBtnLoading, projectOption } = this.state;
     const { form: { getFieldDecorator } } = this.props;
     const paginationProps = {
       showSizeChanger: true,
@@ -284,6 +290,7 @@ class AppList extends Component {
             添加
           </Button>
           <Table
+            rowKey="id"
             columns={columns}
             dataSource={appListData}
             showHeader
@@ -343,9 +350,11 @@ class AppList extends Component {
                   onChange={onChange}
                   onSearch={onSearch}
                 >
-                  <Option value="1">八卦</Option>
-                  <Option value="2">洛书</Option>
-                  <Option value="3">司南</Option>
+                  {
+                    projectOption && projectOption.length > 0 ? projectOption.map((item, index) => {
+                      return (<Option value={item.id} key={index}>{item.name}</Option>);
+                    }) : null
+                  }
                 </Select>
               )}
             </FormItem>

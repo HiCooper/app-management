@@ -1,21 +1,20 @@
 import React, { Component } from 'react';
-import { Form, Input, message, Modal, Select } from 'antd';
-import { CreateAppApi } from '../../../api/app';
+import { Form, Input, message, Modal } from 'antd';
 import { CreateProjectApi } from '../../../api/project';
+import CacheService from "../../../cacheService";
 
 const FormItem = Form.Item;
-const { Option } = Select;
 const { TextArea } = Input;
 
 class AddProjectModel extends Component {
-    static displayName = 'AddProjectModel';
+  static displayName = 'AddProjectModel';
 
-    constructor(props) {
-      super(props);
-      this.state = {
-        submitBtnLoading: false,
-      };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      submitBtnLoading: false,
+    };
+  }
 
   formLayout = {
     labelCol: {
@@ -46,6 +45,7 @@ class AddProjectModel extends Component {
       await this.setState({
         submitBtnLoading: false,
       });
+      CacheService.cleanProjectOption();
     });
   };
 
@@ -59,10 +59,10 @@ class AddProjectModel extends Component {
           className="standardListForm"
           width={640}
           bodyStyle={
-                  {
-                    padding: '28px 0',
-                  }
-                }
+            {
+              padding: '28px 0',
+            }
+          }
           destroyOnClose
           visible={visible}
           okText="保存"
@@ -101,4 +101,5 @@ class AddProjectModel extends Component {
     );
   }
 }
+
 export default Form.create()(AddProjectModel);
