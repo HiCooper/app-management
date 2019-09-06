@@ -2,7 +2,7 @@ import axios from 'axios';
 import { message } from 'antd';
 import { getToken, removeAll, getRequestId, updateRequestId } from '../util/auth';
 
-axios.defaults.baseURL = 'http://192.168.2.250:8088';
+axios.defaults.baseURL = 'http://192.168.2.207:8088';
 axios.defaults.timeout = 5000;
 
 axios.interceptors.request.use((config) => {
@@ -30,12 +30,12 @@ axios.interceptors.response.use((response) => {
     message.error('系统链接超时');
   } else {
     const { status, statusText } = response;
-    // if (status === 403 && statusText === 'Forbidden') {
-    //   removeAll();
-    //   localStorage.clear();
-    //   console.info('登陆过期');
-    //   window.location.replace(`${window.location.protocol}//${window.location.host}/#/user/login`);
-    // }
+    if (status === 403 && statusText === 'Forbidden') {
+      removeAll();
+      localStorage.clear();
+      console.info('登陆过期,请重新登陆');
+      window.location.replace(`${window.location.protocol}//${window.location.host}/#/user/login`);
+    }
     message.error(`${status}, ${statusText}`);
   }
   return Promise.reject(error);

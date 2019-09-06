@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './style.less';
 import { Badge, Button, Card, Descriptions, Divider, Icon, message, Modal, Progress, Steps, Table, Tooltip } from 'antd';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
+import { DetailAppApi } from '../../../api/app';
+import { getParamsFromUrl } from '../../../util/stringUtils';
 
 const progressColumns = [
   {
@@ -38,18 +40,37 @@ export default class AppDetail extends Component {
 
   constructor(props) {
     super(props);
+    const query = this.props.location.search;
+    const paramsFromUrl = getParamsFromUrl(query);
+    console.log(query);
     this.state = {
+      id: paramsFromUrl.appId,
       loading: false,
       profileBasic: {
         basicGoods: [],
         basicProgress: [],
       },
       handlerStatusModelVisible: false,
+      detailInfo: {},
     };
   }
 
   componentDidMount() {
+    this.initDetail();
   }
+
+  initDetail = () => {
+    const params = {
+      id: this.state.id,
+    };
+    DetailAppApi(params).then((res) => {
+      if (res.code === '200') {
+        this.setState({
+          detailInfo: res.data,
+        });
+      }
+    });
+  };
 
   startApp = (e) => {
     e.preventDefault();
@@ -105,36 +126,8 @@ export default class AppDetail extends Component {
   };
 
   render() {
-    const { profileBasic, loading, handlerStatusModelVisible } = this.state;
-    const { basicGoods, basicProgress } = profileBasic;
-    let goodsData = [];
-
-    if (basicGoods.length) {
-      let num = 0;
-      let amount = 0;
-      basicGoods.forEach((item) => {
-        num += Number(item.num);
-        amount += Number(item.amount);
-      });
-      goodsData = basicGoods.concat({
-        id: '总计',
-        num,
-        amount,
-      });
-    }
-
-    const renderContent = (value, row, index) => {
-      const obj = {
-        children: value,
-        props: {},
-      };
-
-      if (index === basicGoods.length) {
-        obj.props.colSpan = 0;
-      }
-
-      return obj;
-    };
+    const { loading, handlerStatusModelVisible, detailInfo } = this.state;
+    console.log(detailInfo);
 
     const goodsColumns = [
       {
@@ -144,43 +137,28 @@ export default class AppDetail extends Component {
       },
       {
         title: '耗时',
-        dataIndex: 'cost',
-        key: 'cost',
-        render: renderContent,
+        dataIndex: 'endTime',
+        key: 'endTime',
+        render: (text, record) => {
+          const cost = new Date(text) - new Date(record.startTime);
+          console.log(cost);
+          return (
+            <span>
+              {(cost / 1000)}
+              秒
+            </span>
+          );
+        },
       },
       {
         title: '状态',
-        dataIndex: 'state',
-        key: 'state',
-        render(val) {
-          return <Badge status={statusMap[val]} text={status[val]} />;
-        },
+        dataIndex: 'resultState',
+        key: 'resultState',
       },
       {
         title: '操作员',
         dataIndex: 'operator',
         key: 'operator',
-        render: renderContent,
-      },
-      {
-        title: '运行实例数',
-        dataIndex: 'num',
-        key: 'num',
-        render: (text, row, index) => {
-          if (index < basicGoods.length) {
-            return text;
-          }
-
-          return (
-            <span
-              style={{
-                fontWeight: 600,
-              }}
-            >
-              {text}
-            </span>
-          );
-        },
       },
     ];
 
@@ -289,15 +267,11 @@ export default class AppDetail extends Component {
               marginBottom: 32,
             }}
           >
-            <Descriptions.Item label="应用名称">支付宝</Descriptions.Item>
-            <Descriptions.Item label="git仓库地址">git@github.com:xxx/project-a.git</Descriptions.Item>
-            <Descriptions.Item label="所属项目">八卦</Descriptions.Item>
-            <Descriptions.Item label="应用名描述">那是一种内在的东西， 他们到达不了，也无法触及的</Descriptions.Item>
-            <Descriptions.Item label="所有者">卡卡西</Descriptions.Item>
-            <Descriptions.Item label="上次构建成功时间">2019-08-28 09:09:09</Descriptions.Item>
-            <Descriptions.Item label="运行实例数">1/3</Descriptions.Item>
-            <Descriptions.Item label="停止实例数">0/3</Descriptions.Item>
-            <Descriptions.Item label="异常实例数">1/3</Descriptions.Item>
+            <Descriptions.Item label="应用名称">{detailInfo.name}</Descriptions.Item>
+            <Descriptions.Item label="git仓库地址">{detailInfo.gitUrl}</Descriptions.Item>
+            <Descriptions.Item label="所属项目">{detailInfo.projectName}</Descriptions.Item>
+            <Descriptions.Item label="应用名描述">{detailInfo.description}</Descriptions.Item>
+            <Descriptions.Item label="所有者">{detailInfo.username}</Descriptions.Item>
           </Descriptions>
           <Divider
             style={{
@@ -319,19 +293,9 @@ export default class AppDetail extends Component {
             }}
             pagination={false}
             loading={loading}
-            dataSource={goodsData}
+            dataSource={detailInfo.buildHistoryList}
             columns={goodsColumns}
             rowKey="id"
-          />
-          <div className="title">编辑历史</div>
-          <Table
-            style={{
-              marginBottom: 16,
-            }}
-            pagination={false}
-            loading={loading}
-            dataSource={basicProgress}
-            columns={progressColumns}
           />
         </Card>
         <Modal
