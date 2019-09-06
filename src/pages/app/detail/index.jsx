@@ -5,29 +5,6 @@ import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import { DetailAppApi } from '../../../api/app';
 import { getParamsFromUrl } from '../../../util/stringUtils';
 
-const progressColumns = [
-  {
-    title: '编号',
-    dataIndex: 'time',
-    key: 'time',
-  },
-  {
-    title: '时间',
-    dataIndex: 'rate',
-    key: 'rate',
-  },
-  {
-    title: '描述',
-    dataIndex: 'status',
-    key: 'status',
-  },
-  {
-    title: '操作员',
-    dataIndex: 'operator',
-    key: 'operator',
-  },
-];
-
 const { Step } = Steps;
 const { confirm } = Modal;
 
@@ -46,10 +23,6 @@ export default class AppDetail extends Component {
     this.state = {
       id: paramsFromUrl.appId,
       loading: false,
-      profileBasic: {
-        basicGoods: [],
-        basicProgress: [],
-      },
       handlerStatusModelVisible: false,
       detailInfo: {},
     };
