@@ -25,18 +25,18 @@ axios.interceptors.response.use((response) => {
   }
   return response;
 }, (error) => {
-  const { status, statusText } = error.response;
-  console.log(status, statusText);
-  if (!status) {
+  const { response } = error;
+  if (!response) {
     message.error('系统链接超时');
   } else {
-    if (status === 403 && statusText === 'Forbidden') {
-      removeAll();
-      localStorage.clear();
-      console.info('登陆过期');
-      window.location.replace(`${window.location.protocol}//${window.location.host}/#/user/login`);
-    }
-    message.error(`${error.response.status}, ${error.response.statusText}`);
+    const { status, statusText } = response;
+    // if (status === 403 && statusText === 'Forbidden') {
+    //   removeAll();
+    //   localStorage.clear();
+    //   console.info('登陆过期');
+    //   window.location.replace(`${window.location.protocol}//${window.location.host}/#/user/login`);
+    // }
+    message.error(`${status}, ${statusText}`);
   }
   return Promise.reject(error);
 },);
