@@ -21,6 +21,7 @@ import { Link } from 'react-router-dom';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import { CreateAppApi, ListAppApi } from '../../../api/app';
 import CacheService from '../../../cacheService';
+import { getColorByWord } from '../../../util/sys';
 
 const { Option } = Select;
 const FormItem = Form.Item;
@@ -180,19 +181,22 @@ class AppList extends Component {
         title: '应用名称',
         dataIndex: 'name',
         key: 'name',
-        render: (text, record) => (
-          <div className="app-base-info">
-            <Avatar shape="square" size="large" style={{ marginRight: 16, verticalAlign: 'middle' }}>
-              {record.name.substr(0, 1)}
-            </Avatar>
-            <div>
-              <h4>
-                <Link to={`/app/detail?appId=${record.id}`}>{record.name}</Link>
-              </h4>
-              <div className="desc">{record.description}</div>
+        render: (text, record) => {
+          const firstWord = record.name.substr(0, 1);
+          return (
+            <div className="app-base-info">
+              <Avatar shape="square" size="large" style={{ marginRight: 16, verticalAlign: 'middle', background: getColorByWord(firstWord) }}>
+                {firstWord}
+              </Avatar>
+              <div>
+                <h4>
+                  <Link to={`/app/detail?appId=${record.id}`}>{record.name}</Link>
+                </h4>
+                <div className="desc">{record.description}</div>
+              </div>
             </div>
-          </div>
-        ),
+          );
+        },
       },
       {
         title: '所属项目',
