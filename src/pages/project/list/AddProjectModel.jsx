@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
-import {Form, Input, message, Modal} from 'antd';
-import {CreateProjectApi} from '../../../api/project';
-import CacheService from "../../../cacheService";
+import React, { Component } from 'react';
+import { Form, Input, message, Modal } from 'antd';
+import { CreateProjectApi } from '../../../api/project';
+import CacheService from '../../../cacheService';
 
 const FormItem = Form.Item;
-const {TextArea} = Input;
+const { TextArea } = Input;
 
 class AddProjectModel extends Component {
   static displayName = 'AddProjectModel';
@@ -27,7 +27,7 @@ class AddProjectModel extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const {form} = this.props;
+    const { form } = this.props;
     form.validateFields(async (err, fieldsValue) => {
       if (err) return;
       await this.setState({
@@ -47,8 +47,8 @@ class AddProjectModel extends Component {
   };
 
   render() {
-    const {visible, form: {getFieldDecorator}} = this.props;
-    const {submitBtnLoading} = this.state;
+    const { visible, form: { getFieldDecorator } } = this.props;
+    const { submitBtnLoading } = this.state;
     return (
       <div>
         <Modal
@@ -63,7 +63,7 @@ class AddProjectModel extends Component {
           destroyOnClose
           visible={visible}
           okText="保存"
-          okButtonProps={{loading: submitBtnLoading}}
+          okButtonProps={{ loading: submitBtnLoading }}
           onOk={this.handleSubmit}
           onCancel={this.props.onClose}
         >
@@ -76,10 +76,10 @@ class AddProjectModel extends Component {
                     message: '请输入应用名称',
                   },
                 ],
-              })(<Input placeholder="请输入应用名称"/>)}
+              })(<Input placeholder="请输入应用名称" />)}
             </FormItem>
             <FormItem label="项目主页" {...this.formLayout}>
-              {getFieldDecorator('homeUrl', {})(<Input placeholder="https://www.projecthome.html"/>)}
+              {getFieldDecorator('homeUrl', {})(<Input placeholder="https://www.projecthome.html" />)}
             </FormItem>
             <FormItem {...this.formLayout} label="项目描述">
               {getFieldDecorator('description', {
@@ -90,7 +90,7 @@ class AddProjectModel extends Component {
                     min: 5,
                   },
                 ],
-              })(<TextArea rows={4} placeholder="请输入至少五个字符"/>)}
+              })(<TextArea rows={4} placeholder="请输入至少五个字符" />)}
             </FormItem>
           </Form>
         </Modal>

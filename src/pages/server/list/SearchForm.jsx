@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import {Button, Col, Form, Input, Row, Select} from 'antd';
+import React, { Component } from 'react';
+import { Button, Col, Form, Input, Row, Select } from 'antd';
 
 const FormItem = Form.Item;
-const {Option} = Select;
+const { Option } = Select;
 
 
 class SearchForm extends Component {
@@ -17,7 +17,7 @@ class SearchForm extends Component {
 
   handleSearch = (e) => {
     e.preventDefault();
-    const {form} = this.props;
+    const { form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       const values = {
@@ -32,7 +32,7 @@ class SearchForm extends Component {
   };
 
   handleFormReset = () => {
-    const {form} = this.props;
+    const { form } = this.props;
     form.resetFields();
     this.setState({
       formValues: {},
@@ -45,8 +45,8 @@ class SearchForm extends Component {
   };
 
   render() {
-    const {form} = this.props;
-    const {getFieldDecorator} = form;
+    const { form } = this.props;
+    const { getFieldDecorator } = form;
     return (
       <div className="search-form">
         <Form onSubmit={this.handleSearch} layout="inline">
@@ -59,7 +59,7 @@ class SearchForm extends Component {
           >
             <Col md={8} sm={24}>
               <FormItem label="全局搜索">
-                {getFieldDecorator('keyword')(<Input placeholder="请输入名称/ip"/>)}
+                {getFieldDecorator('keyword')(<Input placeholder="请输入名称/ip" />)}
               </FormItem>
             </Col>
             <Col md={8} sm={24}>
@@ -67,7 +67,7 @@ class SearchForm extends Component {
                 {getFieldDecorator('state')(
                   <Select
                     showSearch
-                    style={{width: 200}}
+                    style={{ width: 200 }}
                     placeholder="请选择"
                     onChange={this.onChange}
                   >
