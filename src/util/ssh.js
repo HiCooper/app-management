@@ -6,7 +6,7 @@ let socket = openSocket('http://localhost:8000');
 function checkConnect() {
   if (socket.disconnected) {
     message.error('连接ssh服务器失败,请稍后再试!');
-    SSH.closeSocket(socket);
+    SSH.closeSocket();
     // 重连，重要，当ssh服务重启后，保证服务重连
     socket = openSocket('http://localhost:8000');
     return false;
@@ -18,22 +18,21 @@ export default class SSH {
   /**
    * 连接 ssh server
    * @param terminal
-   * @param channelId
+   * @param msgId
    * @param ip
    * @param username
    * @param password
    */
-  static connectToServer(terminal, channelId, ip, username, password) {
+  static connectToServer(terminal, msgId, ip, username, password) {
     if (!checkConnect(socket)) {
       return;
     }
-
-    socket.emit('SSHServer', { channelId, ip, username, password });
+    socket.emit('SSHServer', { msgId, ip, username, password });
     const term = terminal.getTerm();
     term.on('data', (data) => {
-      socket.emit(channelId, data);
+      socket.emit(msgId, data);
     });
-    socket.on(channelId, (data) => {
+    socket.on(msgId, (data) => {
       term.write(data);
     });
   }
