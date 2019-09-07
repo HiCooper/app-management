@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Button, Card, Divider, Modal, Table } from 'antd';
-import Iframe from 'react-iframe';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import SearchForm from './SearchForm';
-
 import './style.less';
 import { ListServerApi } from '../../../api/server';
 import AddServerModal from './components/AddServerModal';
+import SSH from '../../../util/ssh';
+
+import XTerm from '../../../components/XTerm';
 
 export default class ServerList extends Component {
   static displayName = 'ServerList';
@@ -22,6 +23,8 @@ export default class ServerList extends Component {
       currentRecord: {},
       tableLoading: true,
     };
+    SSH.connectToServer = SSH.connectToServer.bind(this);
+    this.terminal = null;
   }
 
   componentDidMount() {
@@ -44,18 +47,21 @@ export default class ServerList extends Component {
     });
   };
 
-  openConsole = (record, e) => {
+  openConsole = async (record, e) => {
     e.preventDefault();
-    this.setState({
+    // 一定是 先打开modal ，再 创建 client
+    await this.setState({
       consoleVisible: true,
       currentRecord: record,
     });
+    SSH.connectToServer(this.terminal, record.id, record.ip, 'root', '');
   };
 
 
-  closeConsole = () => {
+  closeConsole = async () => {
     this.setState({
       consoleVisible: false,
+      currentRecord: {},
     });
   };
 
@@ -145,14 +151,10 @@ export default class ServerList extends Component {
             onCancel={this.closeConsole}
             destroyOnClose
           >
-            <Iframe url="http://localhost:8888"
-              width="100%"
-              height="500px"
-              id="myId"
-              className="console"
-              display="initial"
-              allowFullScreen
-              position="relative"
+            <XTerm ref={(terminal) => {
+              this.terminal = terminal;
+            }}
+              id="net1"
             />
           </Modal>
         </Card>
