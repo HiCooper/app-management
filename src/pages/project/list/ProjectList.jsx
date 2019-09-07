@@ -17,7 +17,7 @@ export default class ProjectList extends Component {
     super(props);
     this.state = {
       projectList: [],
-      loading: false,
+      loading: true,
       total: 0,
       pageNum: 1,
       pageSize: 8,
@@ -32,6 +32,7 @@ export default class ProjectList extends Component {
   initListData = async () => {
     const data = await this.getPageData();
     this.setState({
+      loading: false,
       projectList: data,
     });
   };

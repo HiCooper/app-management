@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './style.less';
 import { Badge, Button, Card, Descriptions, Divider, Icon, message, Modal, Progress, Steps, Table, Tooltip } from 'antd';
 import AceEditor from 'react-ace';
+import Iframe from 'react-iframe';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import { DetailAppApi } from '../../../api/app';
 import { getParamsFromUrl } from '../../../util/stringUtils';
@@ -11,8 +12,24 @@ import 'brace/theme/chrome';
 const { Step } = Steps;
 const { confirm } = Modal;
 
-const statusMap = ['default', 'processing', 'success', 'error'];
-const status = ['已关闭', '启动中', '运行中', '异常'];
+const appState = [
+  {
+    state: 'default',
+    label: '已关闭',
+  },
+  {
+    state: 'processing',
+    label: '启动中',
+  },
+  {
+    state: 'success',
+    label: '运行中',
+  },
+  {
+    state: 'error',
+    label: '异常',
+  },
+];
 
 
 export default class AppDetail extends Component {
@@ -28,6 +45,7 @@ export default class AppDetail extends Component {
       loading: false,
       handlerStatusModelVisible: false,
       detailInfo: {},
+      runLogVisible: false,
     };
   }
 
@@ -89,9 +107,6 @@ export default class AppDetail extends Component {
       onOk() {
         that.stopTask();
       },
-      onCancel() {
-        console.log('Cancel');
-      },
     });
   };
 
@@ -103,7 +118,6 @@ export default class AppDetail extends Component {
 
   render() {
     const { loading, handlerStatusModelVisible, detailInfo } = this.state;
-    console.log(detailInfo);
 
     const buildHistoryColumns = [
       {
@@ -152,6 +166,19 @@ export default class AppDetail extends Component {
       },
     ];
 
+    const showRunLog = (e) => {
+      e.preventDefault();
+      this.setState({
+        runLogVisible: true,
+      });
+    };
+
+    const closeRunLog = (e) => {
+      this.setState({
+        runLogVisible: false,
+      });
+    };
+
     const columns = [
       {
         title: '服务器名称',
@@ -173,8 +200,13 @@ export default class AppDetail extends Component {
         dataIndex: 'state',
         key: 'state',
         render(val) {
+          const stateInfo = appState.find(item => item.state === val);
           if (val) {
-            return <Badge status={statusMap[val]} text={status[val]} />;
+            return (
+              <div>
+                <Badge status={val} text={<span className="btn" onClick={e => showRunLog(e)}>{stateInfo.label}</span>} />
+              </div>
+            );
           }
           return '-';
         },
@@ -235,28 +267,6 @@ export default class AppDetail extends Component {
       },
     ];
 
-    const data = [
-      {
-        key: '1',
-        ip: '192.168.2.123',
-        port: 8970,
-        state: '0',
-      },
-      {
-        key: '2',
-        ip: '192.168.2.124',
-        port: 8970,
-        state: '1',
-        task: '构建中',
-        percent: 28,
-      },
-      {
-        key: '3',
-        ip: '192.168.2.125',
-        port: 8970,
-        state: '2',
-      },
-    ];
     return (
       <PageHeaderWrapper className="app-detail-home">
         <Card bordered={false}>
@@ -333,6 +343,30 @@ export default class AppDetail extends Component {
             <Step status="wait" title="备份旧版镜像" description="备份旧版镜像" />
             <Step status="wait" title="运行新镜像容器" description="从云库拉取最新镜像并启动" />
           </Steps>
+        </Modal>
+        <Modal
+          title="运行日志"
+          width="90%"
+          className="run-log-modal"
+          style={{ top: 20, bottom: 20 }}
+          visible={this.state.runLogVisible}
+          footer={[
+            <Button key="close" onClick={closeRunLog}>
+              关闭
+            </Button>,
+          ]}
+          onCancel={closeRunLog}
+          destroyOnClose
+        >
+          <Iframe url="http://localhost:8888"
+            width="100%"
+            height="500px"
+            id="myId"
+            className="console"
+            display="initial"
+            allowFullScreen
+            position="relative"
+          />
         </Modal>
       </PageHeaderWrapper>
     );

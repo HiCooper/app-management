@@ -41,7 +41,7 @@ class AppList extends Component {
       appListData: [],
       pageSize: 10,
       total: 0,
-      cardLoading: false,
+      tableLoading: true,
       visible: false,
       createAppBtnLoading: false,
       current: undefined,
@@ -68,6 +68,7 @@ class AppList extends Component {
         this.setState({
           appListData: res.data && res.data.records,
           total: res.data.total,
+          tableLoading: false,
         });
       }
     });
@@ -132,7 +133,7 @@ class AppList extends Component {
   };
 
   render() {
-    const { cardLoading, visible, current, appListData, pageSize, total, createAppBtnLoading, projectOption } = this.state;
+    const { tableLoading, visible, current, appListData, pageSize, total, createAppBtnLoading, projectOption } = this.state;
     const { form: { getFieldDecorator } } = this.props;
     const paginationProps = {
       showSizeChanger: true,
@@ -249,7 +250,6 @@ class AppList extends Component {
         </Card>
 
         <Card
-          loading={cardLoading}
           className="listCard"
           bordered={false}
           title="应用列表"
@@ -273,6 +273,7 @@ class AppList extends Component {
             添加
           </Button>
           <Table
+            loading={tableLoading}
             rowKey="id"
             columns={columns}
             dataSource={appListData}
