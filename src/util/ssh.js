@@ -18,22 +18,22 @@ export default class SSH {
   /**
    * 连接 ssh server
    * @param terminal
-   * @param msgId
+   * @param channelId
    * @param ip
    * @param username
    * @param password
    */
-  static connectToServer(terminal, msgId, ip, username, password) {
+  static connectToServer(terminal, channelId, ip, username, password) {
     if (!checkConnect(socket)) {
       return;
     }
 
-    socket.emit('SSHServer', { msgId, ip, username, password });
+    socket.emit('SSHServer', { channelId, ip, username, password });
     const term = terminal.getTerm();
     term.on('data', (data) => {
-      socket.emit(msgId, data);
+      socket.emit(channelId, data);
     });
-    socket.on(msgId, (data) => {
+    socket.on(channelId, (data) => {
       term.write(data);
     });
   }
