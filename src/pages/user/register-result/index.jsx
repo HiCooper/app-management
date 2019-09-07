@@ -26,7 +26,7 @@ const RegisterResult = () => (
         <div className={styles.title}>
           <span>注册成功!</span>
         </div>
-    )}
+      )}
       subTitle="激活邮箱"
       extra={actions}
     />

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { Card, Table } from 'antd';
+import { Button, Card, Table } from 'antd';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import SearchForm from './SearchForm';
 
 import './style.less';
 import { Link } from 'react-router-dom';
+import { ListServerApi } from '../../../api/server';
+import AddServerModal from './components/AddServerModal';
 
 const columns = [
   {
@@ -43,114 +45,70 @@ const columns = [
   },
 ];
 
-const data = [
-  {
-    id: '1',
-    name: '服务器1',
-    ip: '192.168.2.123',
-    state: '正常',
-    runAppCount: 5,
-  },
-  {
-    id: '2',
-    name: '服务器2',
-    ip: '192.168.2.124',
-    state: '正常',
-    runAppCount: 6,
-  },
-  {
-    id: '3',
-    name: '服务器3',
-    ip: '192.168.2.125',
-    state: '正常',
-    runAppCount: 7,
-  },
-  {
-    id: '4',
-    name: '服务器3',
-    ip: '192.168.2.125',
-    state: '正常',
-    runAppCount: 7,
-  },
-  {
-    id: '5',
-    name: '服务器3',
-    ip: '192.168.2.125',
-    state: '正常',
-    runAppCount: 7,
-  },
-  {
-    id: '6',
-    name: '服务器3',
-    ip: '192.168.2.125',
-    state: '正常',
-    runAppCount: 7,
-  },
-  {
-    id: '7',
-    name: '服务器3',
-    ip: '192.168.2.125',
-    state: '正常',
-    runAppCount: 7,
-  },
-  {
-    id: '8',
-    name: '服务器3',
-    ip: '192.168.2.125',
-    state: '正常',
-    runAppCount: 7,
-  },
-  {
-    id: '9',
-    name: '服务器3',
-    ip: '192.168.2.125',
-    state: '正常',
-    runAppCount: 7,
-  },
-  {
-    id: '10',
-    name: '服务器3',
-    ip: '192.168.2.125',
-    state: '正常',
-    runAppCount: 7,
-  },
-  {
-    id: '11',
-    name: '服务器3',
-    ip: '192.168.2.125',
-    state: '正常',
-    runAppCount: 7,
-  },
-  {
-    id: '12',
-    name: '服务器3',
-    ip: '192.168.2.125',
-    state: '正常',
-    runAppCount: 7,
-  },
-  {
-    id: '13',
-    name: '服务器3',
-    ip: '192.168.2.125',
-    state: '正常',
-    runAppCount: 7,
-  },
-
-];
 export default class ServerList extends Component {
   static displayName = 'ServerList';
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      serverList: [],
+      total: 0,
+      pageNum: 1,
+      pageSize: 10,
+    };
   }
 
+  componentDidMount() {
+    this.initServerList();
+  }
+
+  initServerList = () => {
+    const params = {
+      pageNum: this.state.pageNum,
+      pageSize: this.state.pageSize,
+    };
+    ListServerApi(params).then((res) => {
+      if (res.msg === 'SUCCESS') {
+        this.setState({
+          serverList: res.data.records,
+          total: res.data.total,
+        });
+      }
+    });
+  };
+
+  createServerSuccess = async () => {
+    await this.setState({
+      pageNum: 1,
+    });
+    this.initServerList();
+    this.closeModal();
+  };
+
+  showAddFormModal = (e) => {
+    e.preventDefault();
+    this.setState({
+      addFormVisible: true,
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      addFormVisible: false,
+    });
+  };
+
   render() {
+    const { serverList, total, addFormVisible } = this.state;
+    const extraContent = (
+      <Button type="primary" onClick={e => this.showAddFormModal(e)}>添加服务器</Button>
+    );
     return (
-      <PageHeaderWrapper className="server-list-home">
+      <PageHeaderWrapper className="server-list-home" extraContent={extraContent}>
         <Card className="card-content">
           <SearchForm />
-          <Table rowKey="id" columns={columns} dataSource={data} />
+          <Table rowKey="id" columns={columns} dataSource={serverList} pagination={total} />
+          <AddServerModal onClose={this.closeModal} submitSuccess={this.createServerSuccess} visible={addFormVisible} />
         </Card>
       </PageHeaderWrapper>
     );

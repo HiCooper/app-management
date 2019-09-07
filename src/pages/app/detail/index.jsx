@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import './style.less';
 import { Badge, Button, Card, Descriptions, Divider, Icon, message, Modal, Progress, Steps, Table, Tooltip } from 'antd';
+import AceEditor from 'react-ace';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import { DetailAppApi } from '../../../api/app';
 import { getParamsFromUrl } from '../../../util/stringUtils';
+import 'brace/mode/sh';
+import 'brace/theme/chrome';
 
 const { Step } = Steps;
 const { confirm } = Modal;
@@ -102,19 +105,33 @@ export default class AppDetail extends Component {
     const { loading, handlerStatusModelVisible, detailInfo } = this.state;
     console.log(detailInfo);
 
-    const goodsColumns = [
+    const buildHistoryColumns = [
       {
         title: '编号',
         dataIndex: 'id',
         key: 'id',
       },
       {
-        title: '耗时',
+        title: '服务器',
+        dataIndex: 'serverAddress',
+        key: 'serverAddress',
+      },
+      {
+        title: '开始时间',
+        dataIndex: 'startTime',
+        key: 'startTime',
+      },
+      {
+        title: '结束时间',
         dataIndex: 'endTime',
         key: 'endTime',
+      },
+      {
+        title: '耗时',
+        dataIndex: 'endTime',
+        key: 'cost',
         render: (text, record) => {
           const cost = new Date(text) - new Date(record.startTime);
-          console.log(cost);
           return (
             <span>
               {(cost / 1000)}
@@ -137,13 +154,18 @@ export default class AppDetail extends Component {
 
     const columns = [
       {
+        title: '服务器名称',
+        dataIndex: 'name',
+        key: 'name',
+      },
+      {
         title: 'IP',
         dataIndex: 'ip',
         key: 'ip',
       },
       {
         title: '端口',
-        dataIndex: 'port',
+        dataIndex: 'serverPort',
         key: 'port',
       },
       {
@@ -151,7 +173,10 @@ export default class AppDetail extends Component {
         dataIndex: 'state',
         key: 'state',
         render(val) {
-          return <Badge status={statusMap[val]} text={status[val]} />;
+          if (val) {
+            return <Badge status={statusMap[val]} text={status[val]} />;
+          }
+          return '-';
         },
       },
       {
@@ -181,6 +206,7 @@ export default class AppDetail extends Component {
               </div>
             );
           }
+          return '-';
         },
       },
       {
@@ -246,14 +272,31 @@ export default class AppDetail extends Component {
             <Descriptions.Item label="应用名描述">{detailInfo.description}</Descriptions.Item>
             <Descriptions.Item label="所有者">{detailInfo.username}</Descriptions.Item>
           </Descriptions>
+          <div className="title">构建脚本</div>
+          <div className="build-sh">
+            <AceEditor
+              mode="sh"
+              fontSize={14}
+              height="200px"
+              width="100%"
+              theme="chrome"
+              name="build-sh-detail"
+              value={detailInfo.buildSh}
+              readOnly
+              showPrintMargin={false}
+              editorProps={{ $blockScrolling: true }}
+            />
+          </div>
           <Divider
             style={{
               marginBottom: 32,
             }}
           />
           <div className="title">实例状态</div>
-          <Table columns={columns}
-            dataSource={data}
+          <Table
+            columns={columns}
+            rowKey="name"
+            dataSource={detailInfo.appAndServerList}
             pagination={false}
             style={{
               marginBottom: 32,
@@ -267,7 +310,7 @@ export default class AppDetail extends Component {
             pagination={false}
             loading={loading}
             dataSource={detailInfo.buildHistoryList}
-            columns={goodsColumns}
+            columns={buildHistoryColumns}
             rowKey="id"
           />
         </Card>

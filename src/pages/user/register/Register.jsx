@@ -177,7 +177,7 @@ class Register extends Component {
             <Form.Item>
               <div className="button-op">
                 <Button type="primary" htmlType="submit" style={{ width: '50%' }}>
-                注册
+                  注册
                 </Button>
                 <Link to="/user/login">使用已有账户登录</Link>
               </div>

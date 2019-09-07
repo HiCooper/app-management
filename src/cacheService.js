@@ -16,8 +16,6 @@ class CacheService {
           projectOption = res.data;
           sessionStorage.setItem('projectOption', JSON.stringify(projectOption));
         }
-      }).catch((err) => {
-        console.error(err);
       });
     }
     return projectOption;

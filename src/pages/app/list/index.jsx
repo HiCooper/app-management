@@ -8,7 +8,6 @@ import {
   Divider,
   Form,
   Input,
-  message,
   Modal,
   notification,
   Radio,
@@ -71,8 +70,6 @@ class AppList extends Component {
           total: res.data.total,
         });
       }
-    }).catch((e) => {
-      console.error(e);
     });
     const projectOption = await CacheService.getProjectOption();
     this.setState({
@@ -127,9 +124,6 @@ class AppList extends Component {
           this.handleDone();
           this.initData();
         }
-      }).catch((error) => {
-        console.error(error);
-        message.error('操作失败');
       });
       await this.setState({
         createAppBtnLoading: false,
@@ -185,7 +179,10 @@ class AppList extends Component {
           const firstWord = record.name.substr(0, 1);
           return (
             <div className="app-base-info">
-              <Avatar shape="square" size="large" style={{ marginRight: 16, verticalAlign: 'middle', background: getColorByWord(firstWord) }}>
+              <Avatar shape="square"
+                size="large"
+                style={{ marginRight: 16, verticalAlign: 'middle', background: getColorByWord(firstWord) }}
+              >
                 {firstWord}
               </Avatar>
               <div>
@@ -215,27 +212,9 @@ class AppList extends Component {
         key: 'lastSuccessTime',
       },
       {
-        title: '最近状态',
+        title: '运行状态',
         key: 'state',
         dataIndex: 'state',
-        filters: [
-          {
-            text: status[0],
-            value: '0',
-          },
-          {
-            text: status[1],
-            value: '1',
-          },
-          {
-            text: status[2],
-            value: '2',
-          },
-          {
-            text: status[3],
-            value: '3',
-          },
-        ],
         render(val) {
           return <Badge status={statusMap[val]} text={status[val]} />;
         },

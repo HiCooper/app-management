@@ -31,12 +31,6 @@ class Login extends Component {
             message.success('登陆成功');
             this.props.history.push('/');
           }
-        }).catch((error) => {
-          console.error(error);
-          message.error('登陆失败');
-          this.setState({
-            loginBtnLoading: false,
-          });
         });
       }
     });

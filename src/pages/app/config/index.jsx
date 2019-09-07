@@ -198,7 +198,7 @@ class AppConfig extends Component {
                 height="200px"
                 theme="chrome"
                 onChange={onChange}
-                name="UNIQUE_ID_OF_DIV"
+                name="build-sh-config"
                 editorProps={{ $blockScrolling: true }}
               />
             </FormItem>

@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import { Avatar, Button, Card, Icon, List, Typography } from 'antd';
+import React, {Component} from 'react';
+import {Avatar, Button, Card, Icon, List, Typography} from 'antd';
 import './style.less';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import Search from 'antd/es/input/Search';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
-import { ListProjectApi } from '../../../api/project';
+import {ListProjectApi} from '../../../api/project';
 
 import AddProjectModel from './AddProjectModel';
-import { getColorByWord } from '../../../util/sys';
+import {getColorByWord} from '../../../util/sys';
 
-const { Paragraph } = Typography;
+const {Paragraph} = Typography;
 export default class ProjectList extends Component {
   static displayName = 'ProjectList';
 
@@ -50,20 +50,18 @@ export default class ProjectList extends Component {
         });
         result = res.data.records;
       }
-    }).catch((err) => {
-      console.error(err);
     });
     return result;
   };
 
   onLoadMore = async () => {
-    const { pageNum, total } = this.state;
+    const {pageNum, total} = this.state;
     if (pageNum < total && total > 1) {
       await this.setState({
         loading: true,
         pageNum: pageNum + 1,
       });
-      const { projectList } = this.state;
+      const {projectList} = this.state;
       const data = await this.getPageData();
       this.setState({
         projectList: projectList.concat(data),
@@ -101,7 +99,7 @@ export default class ProjectList extends Component {
   };
 
   render() {
-    const { projectList, total, loading, addProjectModelVisible } = this.state;
+    const {projectList, total, loading, addProjectModelVisible} = this.state;
     const loadMore = projectList.length < total && !loading ? (
       <div
         style={{
@@ -116,12 +114,12 @@ export default class ProjectList extends Component {
     ) : null;
 
     const headerSearch = (
-      <div style={{ textAlign: 'center' }}>
+      <div style={{textAlign: 'center'}}>
         <Search
           placeholder="请输入项目名称"
           enterButton="搜索"
           size="large"
-          style={{ width: 400 }}
+          style={{width: 400}}
           onSearch={value => this.goSearchProject(value)}
         />
       </div>
@@ -156,7 +154,7 @@ export default class ProjectList extends Component {
                         avatar={(
                           <Avatar
                             className="cardAvatar"
-                            style={{ background: getColorByWord(firstWord) }}
+                            style={{background: getColorByWord(firstWord)}}
                             size="large"
                           >
                             {firstWord}
@@ -181,7 +179,7 @@ export default class ProjectList extends Component {
               return (
                 <List.Item>
                   <Button type="dashed" className="newButton" onClick={this.openCreateProjectModel}>
-                    <Icon type="plus" />
+                    <Icon type="plus"/>
                     新增产品
                   </Button>
                 </List.Item>
@@ -189,8 +187,8 @@ export default class ProjectList extends Component {
             }}
           />
           <AddProjectModel onClose={this.closeCreateProjectModel}
-            onSubmitSuccess={this.createProjectSuccess}
-            visible={addProjectModelVisible}
+                           onSubmitSuccess={this.createProjectSuccess}
+                           visible={addProjectModelVisible}
           />
         </div>
       </PageHeaderWrapper>
