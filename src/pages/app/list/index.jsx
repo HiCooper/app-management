@@ -39,6 +39,7 @@ class AppList extends Component {
     super(props);
     this.state = {
       appListData: [],
+      pageNum: 1,
       pageSize: 10,
       total: 0,
       tableLoading: true,
@@ -46,6 +47,8 @@ class AppList extends Component {
       createAppBtnLoading: false,
       current: undefined,
       projectOption: [],
+      // 搜索关键字
+      keyword: '',
     };
   }
 
@@ -63,7 +66,12 @@ class AppList extends Component {
   }
 
   initData = async () => {
-    ListAppApi().then((res) => {
+    const params = {
+      pageNum: this.state.pageNum,
+      pageSize: this.state.pageSize,
+      keyword: this.state.keyword,
+    };
+    ListAppApi(params).then((res) => {
       if (res.code === '200') {
         this.setState({
           appListData: res.data && res.data.records,
@@ -132,6 +140,14 @@ class AppList extends Component {
     });
   };
 
+  goSearchApp = async (value) => {
+    await this.setState({
+      keyword: value.trim(),
+      pageNum: 1,
+    });
+    this.initData();
+  };
+
   render() {
     const { tableLoading, visible, current, appListData, pageSize, total, createAppBtnLoading, projectOption } = this.state;
     const { form: { getFieldDecorator } } = this.props;
@@ -159,7 +175,7 @@ class AppList extends Component {
           <RadioButton value="progress">已停止</RadioButton>
           <RadioButton value="waiting">状态异常</RadioButton>
         </RadioGroup>
-        <Search className="extraContentSearch" placeholder="请输入应用名称/所属项目/所有者" onSearch={() => ({})} />
+        <Search className="extraContentSearch" placeholder="请输入应用名称/所属项目/所有者" onSearch={this.goSearchApp} />
       </div>
     );
 

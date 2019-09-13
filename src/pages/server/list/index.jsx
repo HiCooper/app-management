@@ -8,6 +8,7 @@ import AddServerModal from './components/AddServerModal';
 import SSH from '../../../util/ssh';
 
 import XTerm from '../../../components/XTerm';
+import { getUuid } from '../../../util/stringUtils';
 
 export default class ServerList extends Component {
   static displayName = 'ServerList';
@@ -54,7 +55,7 @@ export default class ServerList extends Component {
       consoleVisible: true,
       currentRecord: record,
     });
-    SSH.connectToServer(this.terminal, record.id, record.ip, 'root', '');
+    SSH.connectToServer(this.terminal, getUuid(), record.ip, 'root', '');
   };
 
 
@@ -143,10 +144,16 @@ export default class ServerList extends Component {
             className="console-modal"
             style={{ top: 20, bottom: 20 }}
             visible={consoleVisible}
+            maskClosable={false}
             footer={[
-              <Button key="close" onClick={this.closeConsole}>
-                关闭
-              </Button>,
+              (
+                <div>
+                  <span style={{ marginRight: 8, fontSize: 12 }}>关闭后,会话将结束</span>
+                  <Button key="close" onClick={this.closeConsole}>
+                    关闭
+                  </Button>
+                </div>
+              ),
             ]}
             onCancel={this.closeConsole}
             destroyOnClose

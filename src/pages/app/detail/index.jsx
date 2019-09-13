@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import './style.less';
 import { Badge, Button, Card, Descriptions, Divider, Icon, message, Modal, Progress, Steps, Table, Tooltip } from 'antd';
 import AceEditor from 'react-ace';
-import Iframe from 'react-iframe';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import { DetailAppApi } from '../../../api/app';
-import { getParamsFromUrl } from '../../../util/stringUtils';
+import { getParamsFromUrl, getUuid } from '../../../util/stringUtils';
 import 'brace/mode/sh';
 import 'brace/theme/chrome';
+import SSH from '../../../util/ssh';
+import XTerm from '../../../components/XTerm';
+import InstanceDetailDrawer from './components/InstanceDetailDrawer';
 
 const { Step } = Steps;
 const { confirm } = Modal;
@@ -44,9 +46,13 @@ export default class AppDetail extends Component {
       id: paramsFromUrl.appId,
       loading: false,
       handlerStatusModelVisible: false,
+      // 实例详情抽屉显示
+      instanceDetailDrawerVisible: false,
       detailInfo: {},
       runLogVisible: false,
     };
+    SSH.connectToServer = SSH.connectToServer.bind(this);
+    this.terminal = null;
   }
 
   componentDidMount() {
@@ -116,8 +122,14 @@ export default class AppDetail extends Component {
     setTimeout(hide, 2500);
   };
 
+  closeInstanceDrawer = () => {
+    this.setState({
+      instanceDetailDrawerVisible: false,
+    });
+  };
+
   render() {
-    const { loading, handlerStatusModelVisible, detailInfo } = this.state;
+    const { loading, handlerStatusModelVisible, detailInfo, instanceDetailDrawerVisible } = this.state;
 
     const buildHistoryColumns = [
       {
@@ -166,18 +178,27 @@ export default class AppDetail extends Component {
       },
     ];
 
-    const showRunLog = (e) => {
+    const showRunLog = async (record, e) => {
       e.preventDefault();
-      this.setState({
+      await this.setState({
         runLogVisible: true,
       });
+      SSH.connectToServer(this.terminal, getUuid(), record.ip, 'root', '');
     };
 
-    const closeRunLog = (e) => {
+    const closeRunLog = () => {
       this.setState({
         runLogVisible: false,
       });
     };
+
+    const openInstanceDrawer = (record, e) =>{
+      e.preventDefault();
+      this.setState({
+        instanceDetailDrawerVisible: true,
+      });
+    };
+
 
     const columns = [
       {
@@ -199,12 +220,20 @@ export default class AppDetail extends Component {
         title: '状态',
         dataIndex: 'state',
         key: 'state',
-        render(val) {
+        render(val, record) {
           const stateInfo = appState.find(item => item.state === val);
           if (val) {
             return (
               <div>
-                <Badge status={val} text={<span className="btn" onClick={e => showRunLog(e)}>{stateInfo.label}</span>} />
+                <Badge status={val}
+                  text={(
+                    <span className="btn"
+                      onClick={e => openInstanceDrawer(record, e)}
+                    >
+                      {stateInfo.label}
+                    </span>
+                  )}
+                />
               </div>
             );
           }
@@ -270,6 +299,16 @@ export default class AppDetail extends Component {
     return (
       <PageHeaderWrapper className="app-detail-home">
         <Card bordered={false}>
+          <div className="title">实例状态</div>
+          <Table
+            columns={columns}
+            rowKey="name"
+            dataSource={detailInfo.appAndServerList}
+            pagination={false}
+            style={{
+              marginBottom: 32,
+            }}
+          />
           <Descriptions
             title="基本信息"
             style={{
@@ -280,6 +319,7 @@ export default class AppDetail extends Component {
             <Descriptions.Item label="git仓库地址">{detailInfo.gitUrl}</Descriptions.Item>
             <Descriptions.Item label="所属项目">{detailInfo.projectName}</Descriptions.Item>
             <Descriptions.Item label="应用名描述">{detailInfo.description}</Descriptions.Item>
+            <Descriptions.Item label="部署目录">{detailInfo.runPath}</Descriptions.Item>
             <Descriptions.Item label="所有者">{detailInfo.username}</Descriptions.Item>
           </Descriptions>
           <div className="title">构建脚本</div>
@@ -298,16 +338,6 @@ export default class AppDetail extends Component {
             />
           </div>
           <Divider
-            style={{
-              marginBottom: 32,
-            }}
-          />
-          <div className="title">实例状态</div>
-          <Table
-            columns={columns}
-            rowKey="name"
-            dataSource={detailInfo.appAndServerList}
-            pagination={false}
             style={{
               marginBottom: 32,
             }}
@@ -350,24 +380,28 @@ export default class AppDetail extends Component {
           className="run-log-modal"
           style={{ top: 20, bottom: 20 }}
           visible={this.state.runLogVisible}
+          maskClosable={false}
           footer={[
-            <Button key="close" onClick={closeRunLog}>
-              关闭
-            </Button>,
+            (
+              <div>
+                <span style={{ marginRight: 8, fontSize: 12 }}>关闭后,会话将结束</span>
+                <Button key="close" onClick={closeRunLog}>
+                  关闭
+                </Button>
+              </div>
+            ),
           ]}
           onCancel={closeRunLog}
           destroyOnClose
         >
-          <Iframe url="http://localhost:8888"
-            width="100%"
-            height="500px"
-            id="myId"
-            className="console"
-            display="initial"
-            allowFullScreen
-            position="relative"
+          <XTerm ref={(terminal) => {
+            this.terminal = terminal;
+          }}
+            autofocus
+            id="run_log"
           />
         </Modal>
+        <InstanceDetailDrawer visible={instanceDetailDrawerVisible} onClose={this.closeInstanceDrawer} />
       </PageHeaderWrapper>
     );
   }
