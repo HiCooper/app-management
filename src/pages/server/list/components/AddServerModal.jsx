@@ -85,7 +85,7 @@ class AddServerModal extends Component {
                     message: '请输入服务器ip',
                   },
                 ],
-              })(<Input placeholder="127.0.0.1:8080" />)}
+              })(<Input placeholder="127.0.0.1" />)}
             </FormItem>
             <FormItem {...this.formLayout} label="服务器描述">
               {getFieldDecorator('description', {
