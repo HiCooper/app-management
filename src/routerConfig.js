@@ -1,15 +1,15 @@
-import Login from './pages/user/login';
-import Register from './pages/user/register';
-import Analysis from './pages/dashboard/analysis/Analysis';
-import Monitor from './pages/dashboard/monitor/Monitor';
-import Workplace from './pages/dashboard/workplace/Workplace';
-import ProjectList from './pages/project/list';
-import AppList from './pages/app/list';
-import AppDetail from './pages/app/detail';
-import AppConfig from './pages/app/config';
-import ServerList from './pages/server/list';
-import Setting from './pages/setting';
-import RegisterResult from './pages/user/register-result';
+import Analysis from './pages/Dashboard/Analysis/Analysis';
+import Monitor from './pages/Dashboard/Monitor/Monitor';
+import Workplace from './pages/Dashboard/Workplace/Workplace';
+import ProjectList from './pages/Project/List';
+import ServerList from './pages/Server/List';
+import AppList from './pages/App/List';
+import AppDetail from './pages/App/Detail';
+import AppConfig from './pages/App/Config';
+import Setting from './pages/Setting';
+import Login from './pages/User/Login';
+import Register from './pages/User/Register';
+import RegisterResult from './pages/User/RegisterResult';
 
 const routerConfig = [
   {

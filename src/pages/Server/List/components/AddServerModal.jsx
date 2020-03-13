@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
-import { Form, Input, message, Modal } from 'antd';
-import { CreateProjectApi } from '../../../api/project';
-import CacheService from '../../../cacheService';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Input, message, Modal } from 'antd';
+import { CreateServerApi } from '../../../../api/server';
 
 const FormItem = Form.Item;
+
 const { TextArea } = Input;
 
-class AddProjectModel extends Component {
-  static displayName = 'AddProjectModel';
+class AddServerModal extends Component {
+  static displayName = 'AddServerModal';
 
   constructor(props) {
     super(props);
     this.state = {
-      submitBtnLoading: false,
+      addServerBtnLoading: false,
     };
   }
 
@@ -31,28 +33,27 @@ class AddProjectModel extends Component {
     form.validateFields(async (err, fieldsValue) => {
       if (err) return;
       await this.setState({
-        submitBtnLoading: true,
+        addServerBtnLoading: true,
       });
-      await CreateProjectApi(fieldsValue).then((res) => {
+      await CreateServerApi(fieldsValue).then((res) => {
         if (res.code === '200') {
-          message.success('创建成功');
-          this.props.onSubmitSuccess();
+          message.success('服务器添加成功');
+          this.props.submitSuccess();
         }
       });
       await this.setState({
-        submitBtnLoading: false,
+        addServerBtnLoading: false,
       });
-      CacheService.cleanProjectOption();
     });
   };
 
   render() {
-    const { visible, form: { getFieldDecorator } } = this.props;
-    const { submitBtnLoading } = this.state;
+    const { addServerBtnLoading } = this.state;
+    const { form: { getFieldDecorator } } = this.props;
     return (
       <div>
         <Modal
-          title="项目添加"
+          title="服务器添加"
           className="standardListForm"
           width={640}
           bodyStyle={
@@ -61,32 +62,39 @@ class AddProjectModel extends Component {
             }
           }
           destroyOnClose
-          visible={visible}
+          visible={this.props.visible}
           okText="保存"
-          okButtonProps={{ loading: submitBtnLoading }}
+          okButtonProps={{ loading: addServerBtnLoading }}
           onOk={this.handleSubmit}
           onCancel={this.props.onClose}
         >
           <Form>
-            <FormItem label="项目名称" {...this.formLayout}>
+            <FormItem label="服务器名称" {...this.formLayout}>
               {getFieldDecorator('name', {
                 rules: [
                   {
                     required: true,
-                    message: '请输入应用名称',
+                    message: '请输入服务器名称',
                   },
                 ],
-              })(<Input placeholder="请输入应用名称" />)}
+              })(<Input placeholder="请输入服务器名称" />)}
             </FormItem>
-            <FormItem label="项目主页" {...this.formLayout}>
-              {getFieldDecorator('homeUrl', {})(<Input placeholder="https://www.projecthome.html" />)}
+            <FormItem label="ip" {...this.formLayout}>
+              {getFieldDecorator('ip', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入服务器ip',
+                  },
+                ],
+              })(<Input placeholder="127.0.0.1" />)}
             </FormItem>
-            <FormItem {...this.formLayout} label="项目描述">
+            <FormItem {...this.formLayout} label="服务器描述">
               {getFieldDecorator('description', {
                 rules: [
                   {
                     required: true,
-                    message: '请输入至少五个字符的项目描述！',
+                    message: '请输入至少五个字符的服务器描述！',
                     min: 5,
                   },
                 ],
@@ -99,4 +107,4 @@ class AddProjectModel extends Component {
   }
 }
 
-export default Form.create()(AddProjectModel);
+export default Form.create()(AddServerModal);

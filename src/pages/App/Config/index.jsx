@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { Alert, Button, Card, Divider, Form, Icon, Input, Modal, Select, Tooltip } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Alert, Button, Card, Divider, Input, Modal, Select, Tooltip } from 'antd';
 import AceEditor from 'react-ace';
 import 'brace/mode/sh';
 import 'brace/theme/chrome';
@@ -210,8 +213,7 @@ class AppConfig extends Component {
                   <em style={{ fontStyle: 'normal', color: '#AAA' }}>
                     （选填）
                     <Tooltip title="请确保部署服务器上该目录存在">
-                      <Icon
-                        type="info-circle-o"
+                      <InfoCircleOutlined
                         style={{
                           marginRight: 4,
                         }}

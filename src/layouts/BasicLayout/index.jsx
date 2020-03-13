@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Icon, Layout, Menu } from 'antd';
+import { Icon as LegacyIcon } from '@ant-design/compatible';
+import { Layout, Menu } from 'antd';
 import MainRouter from './MainRouter';
 import './index.scss';
 import logo from '../../asserts/logo.svg';
@@ -71,7 +72,7 @@ class BasicLayout extends Component {
                       key={item.path}
                       title={(
                         <span>
-                          <Icon type={item.icon} />
+                          <LegacyIcon type={item.icon} />
                           <span>{item.name}</span>
                         </span>
                       )}
@@ -86,7 +87,7 @@ class BasicLayout extends Component {
                 }
                 return (
                   <Menu.Item key={item.path}>
-                    <Icon type={item.icon} />
+                    <LegacyIcon type={item.icon} />
                     <span>{item.name}</span>
                   </Menu.Item>
                 );
@@ -101,7 +102,7 @@ class BasicLayout extends Component {
           }}
         >
           <Header style={{ background: '#fff', padding: 0 }} className="global-header">
-            <Icon
+            <LegacyIcon
               className="trigger"
               type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
               onClick={this.toggle}

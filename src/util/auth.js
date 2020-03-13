@@ -1,4 +1,4 @@
-import { getUuid } from "./stringUtils";
+import { getUuid } from './stringUtils';
 
 const TokenKey = 'User-Token';
 const RoleKey = 'User-Role';

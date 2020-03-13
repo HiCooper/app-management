@@ -1,6 +1,27 @@
 import React, { Component } from 'react';
 import './style.less';
-import { Badge, Button, Card, Descriptions, Divider, Icon, message, Modal, Progress, Steps, Table, Tooltip } from 'antd';
+
+import {
+  CaretRightOutlined,
+  CloseCircleOutlined,
+  LoadingOutlined,
+  PoweroffOutlined,
+  ReloadOutlined,
+} from '@ant-design/icons';
+
+import {
+  Badge,
+  Button,
+  Card,
+  Descriptions,
+  Divider,
+  message,
+  Modal,
+  Progress,
+  Steps,
+  Table,
+  Tooltip,
+} from 'antd';
 import AceEditor from 'react-ace';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import { DetailAppApi } from '../../../api/app';
@@ -192,7 +213,7 @@ export default class AppDetail extends Component {
       });
     };
 
-    const openInstanceDrawer = (record, e) =>{
+    const openInstanceDrawer = (record, e) => {
       e.preventDefault();
       this.setState({
         instanceDetailDrawerVisible: true,
@@ -260,7 +281,7 @@ export default class AppDetail extends Component {
                   </Tooltip>
                   <Tooltip title="结束任务">
                     <div className="mini-btn" onClick={this.showStopTaskConfirm}>
-                      <Icon type="close-circle" />
+                      <CloseCircleOutlined />
                     </div>
                   </Tooltip>
                 </div>
@@ -279,15 +300,15 @@ export default class AppDetail extends Component {
             return (
               <div>
                 <Button type="link" onClick={e => this.startApp(e)}>
-                  <Icon type="caret-right" />
+                  <CaretRightOutlined />
                 </Button>
                 <Divider type="vertical" />
                 <Button type="link" onClick={e => this.stopApp(e)}>
-                  <Icon type="poweroff" />
+                  <PoweroffOutlined />
                 </Button>
                 <Divider type="vertical" />
                 <Button type="link" onClick={e => this.restartApp(e)}>
-                  <Icon type="reload" />
+                  <ReloadOutlined />
                 </Button>
               </div>
             );
@@ -367,7 +388,7 @@ export default class AppDetail extends Component {
         >
           <Steps direction="vertical" size="small" current={1}>
             <Step status="finish" title="更新源代码" description="从git拉取或更新源代码" />
-            <Step status="process" title="打包构建" description="构建jar或war包" icon={<Icon type="loading" />} />
+            <Step status="process" title="打包构建" description="构建jar或war包" icon={<LoadingOutlined />} />
             <Step status="wait" title="构建Docker镜像" description="构建Docker镜像" />
             <Step status="wait" title="上传镜像" description="上传镜像到云库" />
             <Step status="wait" title="备份旧版镜像" description="备份旧版镜像" />

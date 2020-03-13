@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Button, Col, Form, Input, Row, Select } from 'antd';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Form, Col, Input, Row, Select } from 'antd';
 
 const FormItem = Form.Item;
 const { Option } = Select;
 
 
-class SearchForm extends Component {
+export default class SearchForm extends Component {
   static displayName = 'SearchForm';
 
   constructor(props) {
@@ -45,8 +46,6 @@ class SearchForm extends Component {
   };
 
   render() {
-    const { form } = this.props;
-    const { getFieldDecorator } = form;
     return (
       <div className="search-form">
         <Form onSubmit={this.handleSearch} layout="inline">
@@ -59,22 +58,20 @@ class SearchForm extends Component {
           >
             <Col md={8} sm={24}>
               <FormItem label="全局搜索">
-                {getFieldDecorator('keyword')(<Input placeholder="请输入名称/ip" />)}
+                <Input placeholder="请输入名称/ip" />
               </FormItem>
             </Col>
             <Col md={8} sm={24}>
               <FormItem label="免密登录">
-                {getFieldDecorator('state')(
-                  <Select
-                    showSearch
-                    style={{ width: 200 }}
-                    placeholder="请选择"
-                    onChange={this.onChange}
-                  >
-                    <Option value="success">成功</Option>
-                    <Option value="fail">失败</Option>
-                  </Select>
-                )}
+                <Select
+                  showSearch
+                  style={{ width: 200 }}
+                  placeholder="请选择"
+                  onChange={this.onChange}
+                >
+                  <Option value="success">成功</Option>
+                  <Option value="fail">失败</Option>
+                </Select>
               </FormItem>
             </Col>
             <Col md={8} sm={24} className="submitButtons">
@@ -98,5 +95,3 @@ class SearchForm extends Component {
     );
   }
 }
-
-export default Form.create()(SearchForm);

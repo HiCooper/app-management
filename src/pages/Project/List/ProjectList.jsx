@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Avatar, Button, Card, Icon, List, Typography } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, List, Typography } from 'antd';
 import './style.less';
 import { Link } from 'react-router-dom';
 import Search from 'antd/es/input/Search';
@@ -180,7 +181,7 @@ export default class ProjectList extends Component {
               return (
                 <List.Item>
                   <Button type="dashed" className="newButton" onClick={this.openCreateProjectModel}>
-                    <Icon type="plus" />
+                    <PlusOutlined />
                     新增产品
                   </Button>
                 </List.Item>

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Cascader, Col, Form, Input, Row, Select } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Cascader, Col, Input, Row, Select } from 'antd';
 import DocumentTitle from 'react-document-title';
 import './style.scss';
 import { Link } from 'react-router-dom';

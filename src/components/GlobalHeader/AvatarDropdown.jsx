@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Avatar, Icon, Menu, Spin } from 'antd';
+import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Menu, Spin } from 'antd';
 import HeaderDropdown from '../HeaderDropdown';
 import avatar from '../../asserts/avatar.png';
 import styles from './index.less';
-import {removeAll} from "../../util/auth";
+import { removeAll } from '../../util/auth';
 
 export default class AvatarDropdown extends Component {
   static displayName = 'AvatarDropdown';
@@ -35,17 +36,17 @@ export default class AvatarDropdown extends Component {
     const menuHeaderDropdown = (
       <Menu className="menu" onClick={this.onMenuClick}>
         <Menu.Item key="/home/center">
-          <Icon type="user" />
+          <UserOutlined />
           <span>个人中心</span>
         </Menu.Item>
         <Menu.Item key="/home/settings">
-          <Icon type="setting" />
+          <SettingOutlined />
           <span>个人设置</span>
         </Menu.Item>
         <Menu.Divider />
 
         <Menu.Item key="/user/login">
-          <Icon type="logout" />
+          <LogoutOutlined />
           <span>推出登陆</span>
         </Menu.Item>
       </Menu>

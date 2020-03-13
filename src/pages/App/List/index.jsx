@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
 import {
   Avatar,
   Badge,
@@ -6,7 +9,6 @@ import {
   Card,
   Col,
   Divider,
-  Form,
   Input,
   Modal,
   notification,
@@ -283,7 +285,7 @@ class AppList extends Component {
               width: '100%',
               marginBottom: 8,
             }}
-            icon="plus"
+            icon={<PlusOutlined />}
             onClick={this.showCreateAppModal}
           >
             添加
@@ -373,7 +375,6 @@ class AppList extends Component {
           </Form>
         </Modal>
       </PageHeaderWrapper>
-
     );
   }
 }
