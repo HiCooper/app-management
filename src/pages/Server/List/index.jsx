@@ -149,7 +149,7 @@ export default class ServerList extends Component {
               (
                 <div>
                   <span style={{ marginRight: 8, fontSize: 12 }}>关闭后,会话将结束</span>
-                  <Button key="close" onClick={this.closeConsole}>
+                  <Button onClick={this.closeConsole}>
                     关闭
                   </Button>
                 </div>

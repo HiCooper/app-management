@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
-import { Input, message, Modal } from 'antd';
+import { Input, message, Modal, Form } from 'antd';
 import { CreateServerApi } from '../../../../api/server';
 
 const FormItem = Form.Item;
 
 const { TextArea } = Input;
 
-class AddServerModal extends Component {
+export default class AddServerModal extends Component {
   static displayName = 'AddServerModal';
 
   constructor(props) {
@@ -49,7 +47,6 @@ class AddServerModal extends Component {
 
   render() {
     const { addServerBtnLoading } = this.state;
-    const { form: { getFieldDecorator } } = this.props;
     return (
       <div>
         <Modal
@@ -70,35 +67,13 @@ class AddServerModal extends Component {
         >
           <Form>
             <FormItem label="服务器名称" {...this.formLayout}>
-              {getFieldDecorator('name', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入服务器名称',
-                  },
-                ],
-              })(<Input placeholder="请输入服务器名称" />)}
+              <Input placeholder="请输入服务器名称" />
             </FormItem>
             <FormItem label="ip" {...this.formLayout}>
-              {getFieldDecorator('ip', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入服务器ip',
-                  },
-                ],
-              })(<Input placeholder="127.0.0.1" />)}
+              <Input placeholder="127.0.0.1" />
             </FormItem>
             <FormItem {...this.formLayout} label="服务器描述">
-              {getFieldDecorator('description', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入至少五个字符的服务器描述！',
-                    min: 5,
-                  },
-                ],
-              })(<TextArea rows={4} placeholder="请输入至少五个字符" />)}
+              <TextArea rows={4} placeholder="请输入至少五个字符" />
             </FormItem>
           </Form>
         </Modal>
@@ -106,5 +81,3 @@ class AddServerModal extends Component {
     );
   }
 }
-
-export default Form.create()(AddServerModal);
