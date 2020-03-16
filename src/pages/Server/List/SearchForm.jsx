@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import '@ant-design/compatible/assets/index.css';
-import { Button, Form, Col, Input, Row, Select } from 'antd';
+import { Button, Form, Input, Select } from 'antd';
 
-const FormItem = Form.Item;
 const { Option } = Select;
 
 

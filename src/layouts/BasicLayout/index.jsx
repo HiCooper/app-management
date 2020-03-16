@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Icon as LegacyIcon } from '@ant-design/compatible';
 import { Layout, Menu } from 'antd';
 import MainRouter from './MainRouter';
 import './index.scss';

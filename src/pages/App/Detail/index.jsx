@@ -262,6 +262,20 @@ export default class AppDetail extends Component {
         },
       },
       {
+        title: '日志',
+        dataIndex: 'runLog',
+        key: 'run_log',
+        render: (text, record) => {
+          return (
+            <div>
+              <Button type="link" onClick={e => showRunLog(record, e)}>
+                连接运行日志
+              </Button>
+            </div>
+          );
+        },
+      },
+      {
         title: '进行中任务',
         dataIndex: 'task',
         key: 'task',
