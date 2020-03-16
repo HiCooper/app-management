@@ -47,7 +47,7 @@ export default class AvatarDropdown extends Component {
 
         <Menu.Item key="/user/login">
           <LogoutOutlined />
-          <span>推出登陆</span>
+          <span>退出登陆</span>
         </Menu.Item>
       </Menu>
     );
