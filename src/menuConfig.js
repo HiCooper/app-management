@@ -3,7 +3,7 @@ const sideMenuConfig = [
   {
     name: 'Dashboard',
     path: '/dashboard',
-    icon: 'dashboard',
+    icon: 'icon-dashboard',
     children: [
       {
         name: '分析页',
@@ -37,7 +37,7 @@ const sideMenuConfig = [
   {
     name: '项目',
     path: '/project',
-    icon: 'project',
+    icon: 'icon-message_line',
     children: [
       {
         name: '列表',

@@ -70,7 +70,10 @@ export default class BasicLayout extends Component {
                       key={item.path}
                       title={(
                         <span>
-                          <span>{item.name}</span>
+                          <svg className="icon" aria-hidden="true">
+                            <use xlinkHref={`#${item.icon}`} />
+                          </svg>
+                          <span style={{ marginLeft: 5 }}>{item.name}</span>
                         </span>
                       )}
                     >
