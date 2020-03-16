@@ -70,10 +70,10 @@ export default class BasicLayout extends Component {
                       key={item.path}
                       title={(
                         <span>
-                          <svg className="icon" aria-hidden="true">
+                          <svg className="icon" aria-hidden="true" style={{ marginRight: 5 }}>
                             <use xlinkHref={`#${item.icon}`} />
                           </svg>
-                          <span style={{ marginLeft: 5 }}>{item.name}</span>
+                          <span>{item.name}</span>
                         </span>
                       )}
                     >
@@ -87,6 +87,9 @@ export default class BasicLayout extends Component {
                 }
                 return (
                   <Menu.Item key={item.path}>
+                    <svg className="icon" aria-hidden="true" style={{ marginRight: 5 }}>
+                      <use xlinkHref={`#${item.icon}`} />
+                    </svg>
                     <span>{item.name}</span>
                   </Menu.Item>
                 );

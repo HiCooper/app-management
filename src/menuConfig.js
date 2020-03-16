@@ -25,7 +25,7 @@ const sideMenuConfig = [
   {
     name: '应用',
     path: '/app',
-    icon: 'appstore',
+    icon: 'icon-jewelry',
     children: [
       {
         name: '列表',
@@ -49,7 +49,7 @@ const sideMenuConfig = [
   {
     name: '服务器',
     path: '/server',
-    icon: 'hdd',
+    icon: 'icon-category',
     exact: true,
     children: [
       {
@@ -62,7 +62,7 @@ const sideMenuConfig = [
   {
     name: '系统设置',
     path: '/setting',
-    icon: 'setting',
+    icon: 'icon-setting',
     exact: true,
   },
 ];
