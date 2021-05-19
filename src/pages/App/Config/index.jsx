@@ -1,34 +1,52 @@
 import React, { Component } from 'react';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
-import { Alert, Button, Card, Divider, Input, Modal, Select, Tooltip } from 'antd';
+import { Alert, Button, Card, Divider, Form, Input, Modal, Select, Tooltip } from 'antd';
 import AceEditor from 'react-ace';
 import 'brace/mode/sh';
 import 'brace/theme/chrome';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import './style.less';
+import { DetailAppApi } from '../../../api/app';
+import { getParamsFromUrl } from '../../../util/stringUtils';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
 const { Option } = Select;
 
-class AppConfig extends Component {
+export default class AppConfig extends Component {
   static displayName = 'AppConfig';
 
   constructor(props) {
     super(props);
-    this.state = {};
+    const query = this.props.location.search;
+    const paramsFromUrl = getParamsFromUrl(query);
+    console.log(query);
+    this.state = {
+      id: paramsFromUrl.appId,
+      detailInfo: {},
+    };
   }
 
-  handleSubmit = (e) => {
-    const { dispatch, form } = this.props;
-    e.preventDefault();
-    form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'formBasicForm/submitRegularForm',
-          payload: values,
+  componentDidMount() {
+    this.initDetail();
+  }
+
+  onFinish = (values) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'formBasicForm/submitRegularForm',
+      payload: values,
+    });
+  };
+
+  initDetail = () => {
+    const params = {
+      id: this.state.id,
+    };
+    DetailAppApi(params).then((res) => {
+      if (res.code === '200') {
+        this.setState({
+          detailInfo: res.data,
         });
       }
     });
@@ -60,9 +78,8 @@ class AppConfig extends Component {
 
   render() {
     const { submitting } = this.props;
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
+    const { detailInfo } = this.state;
+    console.log(detailInfo);
     const formItemLayout = {
       labelCol: {
         xs: {
@@ -109,81 +126,77 @@ class AppConfig extends Component {
       <PageHeaderWrapper className="app-config-home">
         <Card bordered={false}>
           <Form
-            onSubmit={this.handleSubmit}
+            onFinish={this.onFinish}
             style={{
               marginTop: 8,
             }}
+            initialValues={{ appName: detailInfo.name }}
           >
             <div className="title">基本信息</div>
             <FormItem
               {...formItemLayout}
               label="应用名称"
+              name="appName"
+              rules={[
+                {
+                  required: true,
+                  message: '应用名称不能为空',
+                },
+              ]}
             >
-              {getFieldDecorator('appName', {
-                rules: [
-                  {
-                    required: true,
-                    message: '应用名称不能为空',
-                  },
-                ],
-              })(
-                <Input
-                  placeholder="请输入应用名称"
-                />,
-              )}
+              <Input
+                placeholder="请输入应用名称"
+              />
             </FormItem>
-            <FormItem label="git(SSH)地址" {...formItemLayout}>
-              {getFieldDecorator('appName', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入仓库地址(SSH)!',
-                  },
-                ],
-                initialValue: '',
-              })(<Input placeholder="git@github.com:xxx/project-a.git" />)}
+            <FormItem label="git(SSH)地址"
+              {...formItemLayout}
+              name="gitUrl"
+              rules={[
+                {
+                  required: true,
+                  message: '请输入仓库地址(SSH)!',
+                },
+              ]}
+            >
+              <Input placeholder="git@github.com:xxx/project-a.git" />
             </FormItem>
-            <FormItem label="所属项目" {...formItemLayout}>
-              {getFieldDecorator('projectId', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请选择所属项目!',
-                  },
-                ],
-              })(
-                <Select
-                  showSearch
-                  placeholder="请选择所属项目"
-                  onChange={onChange}
-                  onSearch={onSearch}
-                >
-                  <Option value="1">八卦</Option>
-                  <Option value="2">洛书</Option>
-                  <Option value="3">司南</Option>
-                </Select>
-              )}
+            <FormItem label="所属项目"
+              {...formItemLayout}
+              name="projectId"
+              rules={[
+                {
+                  required: true,
+                  message: '请选择所属项目!',
+                },
+              ]}
+            >
+              <Select
+                showSearch
+                placeholder="请选择所属项目"
+                onChange={onChange}
+                onSearch={onSearch}
+              >
+                <Option value="1">八卦</Option>
+                <Option value="2">洛书</Option>
+                <Option value="3">司南</Option>
+              </Select>
             </FormItem>
             <FormItem
               {...formItemLayout}
               label="应用描述"
+              name="description"
+              rules={[{
+                required: true,
+                message: '请输入应用描述!',
+              }]}
             >
-              {getFieldDecorator('description', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入应用描述!',
-                  },
-                ],
-              })(
-                <TextArea
-                  style={{
-                    minHeight: 32,
-                  }}
-                  placeholder="请输入应用描述"
-                  rows={4}
-                />,
-              )}
+              <TextArea
+                style={{
+                  minHeight: 32,
+                }}
+                placeholder="请输入应用描述"
+                rows={4}
+              />
             </FormItem>
             <Divider
               style={{
@@ -222,47 +235,43 @@ class AppConfig extends Component {
                   </em>
                 </span>
               )}
+              name="customRunPath"
             >
-              {getFieldDecorator('customRunPath', {})(
-                <Input
-                  placeholder="请输入运行目录(确保部署服务器上该目录存在)"
-                />,
-              )}
+              <Input
+                placeholder="请输入运行目录(确保部署服务器上该目录存在)"
+              />
             </FormItem>
             <FormItem
               {...formItemLayout}
               label="部署服务器"
+              name="deployServer"
+              rules={[
+                {
+                  required: true,
+                  message: '请选择部署服务器!',
+                },
+              ]}
             >
-              {getFieldDecorator('deployServer', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请选择部署服务器!',
-                  },
-                ],
-                initialValue: ['192.168.2.123'],
-              })(
-                <Select
-                  mode="multiple"
-                  style={{ width: '100%' }}
-                  placeholder="select one country"
-                  onChange={this.handleChange}
-                  optionLabelProp="label"
-                >
-                  <Option value="192.168.2.123" label="192.168.2.123 (司南)">
-                    192.168.2.123 (司南)
-                  </Option>
-                  <Option value="192.168.2.124" label=" 192.168.2.124 (四库)">
-                    192.168.2.124 (四库)
-                  </Option>
-                  <Option value="192.168.2.125" label="192.168.2.125 (洛书)">
-                    192.168.2.124 (洛书)
-                  </Option>
-                  <Option value="192.168.2.126" label=" 192.168.2.126 (八卦)">
-                    192.168.2.124 (八卦)
-                  </Option>
-                </Select>,
-              )}
+              <Select
+                mode="multiple"
+                style={{ width: '100%' }}
+                placeholder="select one country"
+                onChange={this.handleChange}
+                optionLabelProp="label"
+              >
+                <Option value="192.168.2.123" label="192.168.2.123 (司南)">
+                  192.168.2.123 (司南)
+                </Option>
+                <Option value="192.168.2.124" label=" 192.168.2.124 (四库)">
+                  192.168.2.124 (四库)
+                </Option>
+                <Option value="192.168.2.125" label="192.168.2.125 (洛书)">
+                  192.168.2.124 (洛书)
+                </Option>
+                <Option value="192.168.2.126" label=" 192.168.2.126 (八卦)">
+                  192.168.2.124 (八卦)
+                </Option>
+              </Select>
             </FormItem>
             <FormItem
               {...submitFormLayout}
@@ -300,5 +309,3 @@ class AppConfig extends Component {
     );
   }
 }
-
-export default Form.create()(AppConfig);

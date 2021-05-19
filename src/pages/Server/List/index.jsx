@@ -25,7 +25,7 @@ export default class ServerList extends Component {
       tableLoading: true,
     };
     SSH.connectToServer = SSH.connectToServer.bind(this);
-    this.terminal = null;
+    this.terminal = React.createRef();
   }
 
   componentDidMount() {
@@ -55,7 +55,11 @@ export default class ServerList extends Component {
       consoleVisible: true,
       currentRecord: record,
     });
-    SSH.connectToServer(this.terminal, getUuid(), record.ip, 'root', '');
+    setTimeout(() => {
+      if (this.terminal) {
+        SSH.connectToServer(this.terminal, getUuid(), record.ip, 'root', '');
+      }
+    }, 0);
   };
 
 

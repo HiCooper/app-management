@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import '@ant-design/compatible/assets/index.css';
 import { Button, Checkbox, Form, Input, message } from 'antd';
 import './style.scss';
 import DocumentTitle from 'react-document-title';

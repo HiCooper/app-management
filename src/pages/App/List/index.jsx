@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
 import {
   Avatar,
   Badge,
@@ -9,6 +7,7 @@ import {
   Card,
   Col,
   Divider,
+  Form,
   Input,
   Modal,
   notification,
@@ -34,7 +33,7 @@ const { Search, TextArea } = Input;
 const statusMap = ['default', 'processing', 'success', 'error'];
 const status = ['已关闭', '启动中', '运行中', '异常'];
 
-class AppList extends Component {
+export default class AppList extends Component {
   static displayName = 'AppList';
 
   constructor(props) {
@@ -151,8 +150,16 @@ class AppList extends Component {
   };
 
   render() {
-    const { tableLoading, visible, current, appListData, pageSize, total, createAppBtnLoading, projectOption } = this.state;
-    const { form: { getFieldDecorator } } = this.props;
+    const {
+      tableLoading,
+      visible,
+      current,
+      appListData,
+      pageSize,
+      total,
+      createAppBtnLoading,
+      projectOption,
+    } = this.state;
     const paginationProps = {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -317,60 +324,66 @@ class AppList extends Component {
           onCancel={this.handleCancel}
         >
           <Form>
-            <FormItem label="应用名称" {...this.formLayout}>
-              {getFieldDecorator('name', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入应用名称',
-                  },
-                ],
-              })(<Input placeholder="请输入应用名称" />)}
+            <FormItem
+              label="应用名称"
+              {...this.formLayout}
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: '请输入应用名称',
+                },
+              ]}
+            >
+              <Input placeholder="请输入应用名称" />
             </FormItem>
-            <FormItem label="git(SSH)仓库地址" {...this.formLayout}>
-              {getFieldDecorator('gitUrl', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入git仓库地址(SSH)!',
-                  },
-                ],
-              })(<Input placeholder="git@github.com:xxx/project-a.git" />)}
+            <FormItem
+              label="git(SSH)仓库地址"
+              {...this.formLayout}
+              name="gitUrl"
+              rules={[
+                {
+                  required: true,
+                  message: '请输入git仓库地址(SSH)!',
+                }]}
+            >
+              <Input placeholder="git@github.com:xxx/project-a.git" />
             </FormItem>
-            <FormItem label="所属项目" {...this.formLayout}>
-              {getFieldDecorator('projectId', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入应用名称',
-                  },
-                ],
-              })(
-                <Select
-                  showSearch
-                  placeholder="请选择所属项目"
-                  onChange={onChange}
-                  onSearch={onSearch}
-                >
-                  {
-                    projectOption && projectOption.length > 0 ? projectOption.map((item, index) => {
-                      return (<Option value={item.id} key={index}>{item.name}</Option>);
-                    }) : null
-                  }
-                </Select>
-              )}
+            <FormItem label="所属项目"
+              {...this.formLayout}
+              name="projectId"
+              rules={[
+                {
+                  required: true,
+                  message: '请输入应用名称',
+                },
+              ]}
+            >
+              <Select
+                showSearch
+                placeholder="请选择所属项目"
+                onChange={onChange}
+                onSearch={onSearch}
+              >
+                {
+                  projectOption && projectOption.length > 0 ? projectOption.map((item, index) => {
+                    return (<Option value={item.id} key={index}>{item.name}</Option>);
+                  }) : null
+                }
+              </Select>
             </FormItem>
-            <FormItem {...this.formLayout} label="应用描述">
-              {getFieldDecorator('description', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入至少五个字符的应用描述！',
-                    min: 5,
-                  },
-                ],
-                initialValue: current && current.description,
-              })(<TextArea rows={4} placeholder="请输入至少五个字符" />)}
+            <FormItem {...this.formLayout}
+              label="应用描述"
+              name="description"
+              rules={[
+                {
+                  required: true,
+                  message: '请输入至少五个字符的应用描述！',
+                  min: 5,
+                },
+              ]}
+            >
+              <TextArea rows={4} placeholder="请输入至少五个字符" defaultValue={current && current.description} />
             </FormItem>
           </Form>
         </Modal>
@@ -378,5 +391,3 @@ class AppList extends Component {
     );
   }
 }
-
-export default Form.create()(AppList);

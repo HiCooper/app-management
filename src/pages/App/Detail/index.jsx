@@ -9,19 +9,7 @@ import {
   ReloadOutlined,
 } from '@ant-design/icons';
 
-import {
-  Badge,
-  Button,
-  Card,
-  Descriptions,
-  Divider,
-  message,
-  Modal,
-  Progress,
-  Steps,
-  Table,
-  Tooltip,
-} from 'antd';
+import { Badge, Button, Card, Descriptions, Divider, message, Modal, Progress, Steps, Table, Tooltip } from 'antd';
 import AceEditor from 'react-ace';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import { DetailAppApi } from '../../../api/app';
@@ -73,7 +61,7 @@ export default class AppDetail extends Component {
       runLogVisible: false,
     };
     SSH.connectToServer = SSH.connectToServer.bind(this);
-    this.terminal = null;
+    this.terminal = React.createRef();
   }
 
   componentDidMount() {
@@ -204,7 +192,11 @@ export default class AppDetail extends Component {
       await this.setState({
         runLogVisible: true,
       });
-      SSH.connectToServer(this.terminal, getUuid(), record.ip, 'root', '');
+      setTimeout(() => {
+        if (this.terminal) {
+          SSH.connectToServer(this.terminal, getUuid(), record.ip, 'root', '');
+        }
+      }, 0);
     };
 
     const closeRunLog = () => {
@@ -253,7 +245,7 @@ export default class AppDetail extends Component {
                     >
                       {stateInfo.label}
                     </span>
-                  )}
+                       )}
                 />
               </div>
             );
@@ -416,16 +408,14 @@ export default class AppDetail extends Component {
           style={{ top: 20, bottom: 20 }}
           visible={this.state.runLogVisible}
           maskClosable={false}
-          footer={[
-            (
-              <div>
-                <span style={{ marginRight: 8, fontSize: 12 }}>关闭后,会话将结束</span>
-                <Button key="close" onClick={closeRunLog}>
-                  关闭
-                </Button>
-              </div>
-            ),
-          ]}
+          footer={(
+            <div>
+              <span style={{ marginRight: 8, fontSize: 12 }}>关闭后,会话将结束</span>
+              <Button key="close" onClick={closeRunLog}>
+                关闭
+              </Button>
+            </div>
+          )}
           onCancel={closeRunLog}
           destroyOnClose
         >
@@ -433,7 +423,7 @@ export default class AppDetail extends Component {
             this.terminal = terminal;
           }}
             autofocus
-            id="run_log"
+            id={this.state.id}
           />
         </Modal>
         <InstanceDetailDrawer visible={instanceDetailDrawerVisible} onClose={this.closeInstanceDrawer} />

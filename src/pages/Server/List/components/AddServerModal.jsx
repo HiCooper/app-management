@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, message, Modal, Form } from 'antd';
+import { Form, Input, message, Modal } from 'antd';
 import { CreateServerApi } from '../../../../api/server';
 
 const FormItem = Form.Item;

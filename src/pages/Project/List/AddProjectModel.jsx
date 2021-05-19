@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
-import { Input, message, Modal } from 'antd';
+import { Form, Input, message, Modal } from 'antd';
 import { CreateProjectApi } from '../../../api/project';
 import CacheService from '../../../cacheService';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
 
-class AddProjectModel extends Component {
+export default class AddProjectModel extends Component {
   static displayName = 'AddProjectModel';
 
   constructor(props) {
@@ -49,7 +47,7 @@ class AddProjectModel extends Component {
   };
 
   render() {
-    const { visible, form: { getFieldDecorator } } = this.props;
+    const { visible } = this.props;
     const { submitBtnLoading } = this.state;
     return (
       <div>
@@ -70,29 +68,33 @@ class AddProjectModel extends Component {
           onCancel={this.props.onClose}
         >
           <Form>
-            <FormItem label="项目名称" {...this.formLayout}>
-              {getFieldDecorator('name', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入应用名称',
-                  },
-                ],
-              })(<Input placeholder="请输入应用名称" />)}
+            <FormItem
+              label="项目名称"
+              name="name"
+              {...this.formLayout}
+              rules={[{
+                required: true,
+                message: '请输入应用名称',
+              }]}
+            >
+              <Input placeholder="请输入应用名称" />
             </FormItem>
-            <FormItem label="项目主页" {...this.formLayout}>
-              {getFieldDecorator('homeUrl', {})(<Input placeholder="https://www.projecthome.html" />)}
+            <FormItem label="项目主页" {...this.formLayout} name="homeUrl">
+              <Input placeholder="https://www.projecthome.html" />
             </FormItem>
-            <FormItem {...this.formLayout} label="项目描述">
-              {getFieldDecorator('description', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入至少五个字符的项目描述！',
-                    min: 5,
-                  },
-                ],
-              })(<TextArea rows={4} placeholder="请输入至少五个字符" />)}
+            <FormItem
+              {...this.formLayout}
+              label="项目描述"
+              name="description"
+              rules={[
+                {
+                  required: true,
+                  message: '请输入至少五个字符的项目描述！',
+                  min: 5,
+                },
+              ]}
+            >
+              <TextArea rows={4} placeholder="请输入至少五个字符" />
             </FormItem>
           </Form>
         </Modal>
@@ -100,5 +102,3 @@ class AddProjectModel extends Component {
     );
   }
 }
-
-export default Form.create()(AddProjectModel);

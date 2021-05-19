@@ -29,7 +29,7 @@ export default class SSH {
     }
     socket.emit('SSHServer', { msgId, ip, username, password });
     const term = terminal.getTerm();
-    term.on('data', (data) => {
+    term.onData((data) => {
       socket.emit(msgId, data);
     });
     socket.on(msgId, (data) => {

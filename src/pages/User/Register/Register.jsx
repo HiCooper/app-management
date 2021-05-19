@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
-import { Button, Cascader, Col, Input, Row, Select } from 'antd';
+import { Button, Cascader, Col, Form, Input, Row, Select } from 'antd';
 import DocumentTitle from 'react-document-title';
 import './style.scss';
 import { Link } from 'react-router-dom';
@@ -43,7 +41,7 @@ const residences = [
   },
 ];
 
-class Register extends Component {
+export default class Register extends Component {
   static displayName = 'Register';
 
   constructor(props) {
@@ -190,6 +188,3 @@ class Register extends Component {
     );
   }
 }
-
-const WrappedRegistrationForm = Form.create({ name: 'register' })(Register);
-export default WrappedRegistrationForm;
